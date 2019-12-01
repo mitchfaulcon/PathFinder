@@ -2,13 +2,12 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,6 +17,9 @@ public class PathFinderController implements Initializable {
     @FXML Spinner<Integer> rowSpinner;
     @FXML Spinner<Integer> colSpinner;
     @FXML GridPane graphGrid;
+
+    public enum TileStyle {START, FINISH, WALL, NONE}
+    private TileStyle drawingMode = TileStyle.NONE;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -31,6 +33,9 @@ public class PathFinderController implements Initializable {
     }
 
     private void UpdateGrid() {
+
+        //Delete all old cells
+        graphGrid.getChildren().clear();
 
         //Remove all rows and columns
         while(graphGrid.getRowConstraints().size() > 0) {
@@ -50,6 +55,34 @@ public class PathFinderController implements Initializable {
             ColumnConstraints columnConstraints = new ColumnConstraints();
             columnConstraints.setPercentWidth(100.0 / colSpinner.getValue());       //Even column width
             graphGrid.getColumnConstraints().add(columnConstraints);
+        }
+
+        //Add a tile object to each cell to allow for colouring & algorithms
+        for (int row = 0; row < rowSpinner.getValue(); row++) {
+            for (int col = 0; col < colSpinner.getValue(); col++) {
+                Tile tile = new Tile(row, col);
+                //tile.setPrefSize(graphGrid.getPrefWidth() / colSpinner.getValue(), graphGrid.getPrefHeight() / rowSpinner.getValue());
+                graphGrid.add(tile, col, row);
+            }
+        }
+
+        AddCellListeners();
+    }
+
+    private void AddCellListeners(){
+        for (Node node : graphGrid.getChildren()){
+            if (node instanceof Tile){      //Just to be safe
+
+                //Start drawing
+                node.setOnDragDetected(e -> {
+                    node.startFullDrag();
+                });
+
+                //Detect when mouse is clicked and dragged over
+                node.setOnMouseDragEntered(e -> {
+                    ((Tile) node).UpdateTileStyle(drawingMode);
+                });
+            }
         }
     }
 }
