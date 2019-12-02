@@ -7,18 +7,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class PathFinderController implements Initializable {
-
-    public ToggleGroup DRAWMODE;
+    
     @FXML Spinner<Integer> rowSpinner;
     @FXML Spinner<Integer> colSpinner;
     @FXML GridPane graphGrid;
@@ -30,7 +27,7 @@ public class PathFinderController implements Initializable {
     public enum TileStyle {START, FINISH, WALL, NONE}
     private TileStyle drawingMode;
 
-    private ArrayList<ArrayList<Tile>> tileGrid = new ArrayList<>();        //Stores all tiles
+    private Tile[][] tileGrid;               //Stores all tiles
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -51,7 +48,6 @@ public class PathFinderController implements Initializable {
 
         //Delete all old cells
         graphGrid.getChildren().clear();
-        tileGrid.clear();
 
         //Remove all rows and columns
         while(graphGrid.getRowConstraints().size() > 0) {
@@ -73,15 +69,14 @@ public class PathFinderController implements Initializable {
             graphGrid.getColumnConstraints().add(columnConstraints);
         }
 
+        tileGrid = new Tile[rowSpinner.getValue()][colSpinner.getValue()];
         //Add a tile object to each cell to allow for colouring & algorithms
         for (int row = 0; row < rowSpinner.getValue(); row++) {
-            ArrayList<Tile> rowTiles = new ArrayList<>();       //List for just this row
             for (int col = 0; col < colSpinner.getValue(); col++) {
                 Tile tile = new Tile(row, col);
                 graphGrid.add(tile, col, row);
-                rowTiles.add(tile);
+                tileGrid[row][col] = tile;
             }
-            tileGrid.add(rowTiles);
         }
 
         AddCellListeners();
@@ -112,12 +107,12 @@ public class PathFinderController implements Initializable {
     private void UpdateTile(Tile tile){
         //If drawing start or finish point, reset style for all other tiles in grid
         if (drawingMode == TileStyle.START || drawingMode == TileStyle.FINISH){
-            for (ArrayList<Tile> tileRow: tileGrid) {
-                for (Tile t : tileRow) {
-                    if (t.GetTileStyle() == TileStyle.START && drawingMode == TileStyle.START){
+            for (Tile[] tiles : tileGrid) {
+                for (Tile t : tiles) {
+                    if (t.GetTileStyle() == TileStyle.START && drawingMode == TileStyle.START) {
                         t.UpdateTileStyle(TileStyle.NONE);
                     }
-                    if (t.GetTileStyle() == TileStyle.FINISH && drawingMode == TileStyle.FINISH){
+                    if (t.GetTileStyle() == TileStyle.FINISH && drawingMode == TileStyle.FINISH) {
                         t.UpdateTileStyle(TileStyle.NONE);
                     }
                 }
