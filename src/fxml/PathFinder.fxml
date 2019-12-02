@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXToggleNode?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -126,6 +127,11 @@
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
+                  <JFXButton fx:id="goButton" onAction="#OnGoButton" prefHeight="46.0" prefWidth="165.0" style="-fx-background-color: limegreen;" text="GO" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </JFXButton>
                </children>
             </GridPane>
             <GridPane GridPane.columnIndex="1">

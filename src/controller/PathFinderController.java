@@ -1,5 +1,7 @@
 package controller;
 
+import algorithms.common.Map;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXToggleNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,12 +12,13 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import algorithms.common.Map.RET_CODE;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PathFinderController implements Initializable {
-    
+
     @FXML Spinner<Integer> rowSpinner;
     @FXML Spinner<Integer> colSpinner;
     @FXML GridPane graphGrid;
@@ -23,8 +26,9 @@ public class PathFinderController implements Initializable {
     @FXML JFXToggleNode WallToggle;
     @FXML JFXToggleNode StartToggle;
     @FXML JFXToggleNode FinishToggle;
+    @FXML JFXButton goButton;
 
-    public enum TileStyle {START, FINISH, WALL, NONE}
+    public enum TileStyle {START, FINISH, WALL, NONE, SEARCHED, PATH}
     private TileStyle drawingMode;
 
     private Tile[][] tileGrid;               //Stores all tiles
@@ -73,7 +77,7 @@ public class PathFinderController implements Initializable {
         //Add a tile object to each cell to allow for colouring & algorithms
         for (int row = 0; row < rowSpinner.getValue(); row++) {
             for (int col = 0; col < colSpinner.getValue(); col++) {
-                Tile tile = new Tile(row, col);
+                Tile tile = new Tile();
                 graphGrid.add(tile, col, row);
                 tileGrid[row][col] = tile;
             }
@@ -87,34 +91,31 @@ public class PathFinderController implements Initializable {
             if (node instanceof Tile){      //Just to be safe
 
                 //Start drawing
-                node.setOnDragDetected(e -> {
-                    node.startFullDrag();
-                });
+                node.setOnDragDetected(e -> node.startFullDrag());
 
                 //Detect when mouse is clicked and dragged over
-                node.setOnMouseDragEntered(e -> {
-                    UpdateTile((Tile) node);
-                });
+                node.setOnMouseDragEntered(e -> UpdateTile((Tile) node));
 
                 //Also need to detect single clicks
-                node.setOnMousePressed(e -> {
-                    UpdateTile((Tile) node);
-                });
+                node.setOnMousePressed(e -> UpdateTile((Tile) node));
             }
         }
     }
 
     private void UpdateTile(Tile tile){
-        //If drawing start or finish point, reset style for all other tiles in grid
-        if (drawingMode == TileStyle.START || drawingMode == TileStyle.FINISH){
-            for (Tile[] tiles : tileGrid) {
-                for (Tile t : tiles) {
-                    if (t.GetTileStyle() == TileStyle.START && drawingMode == TileStyle.START) {
-                        t.UpdateTileStyle(TileStyle.NONE);
-                    }
-                    if (t.GetTileStyle() == TileStyle.FINISH && drawingMode == TileStyle.FINISH) {
-                        t.UpdateTileStyle(TileStyle.NONE);
-                    }
+        for (Tile[] tiles : tileGrid) {
+            for (Tile t : tiles) {
+                //Remove previous paths
+                if (t.GetTileStyle() == TileStyle.SEARCHED || t.GetTileStyle() == TileStyle.PATH) {
+                    t.UpdateTileStyle(TileStyle.NONE);
+                }
+
+                //If drawing start or finish point, reset style for all other tiles in grid
+                if (t.GetTileStyle() == TileStyle.START && drawingMode == TileStyle.START) {
+                    t.UpdateTileStyle(TileStyle.NONE);
+                }
+                if (t.GetTileStyle() == TileStyle.FINISH && drawingMode == TileStyle.FINISH) {
+                    t.UpdateTileStyle(TileStyle.NONE);
                 }
             }
         }
@@ -144,6 +145,25 @@ public class PathFinderController implements Initializable {
                 }
                 drawingMode = TileStyle.FINISH;
             }
+        }
+    }
+
+    public void OnGoButton() {
+        RET_CODE ret = Map.GetInstance().SetMap(tileGrid);
+
+        switch (ret){
+            case NO_PATH:
+                System.out.println("No path");
+                break;
+            case NO_START:
+                System.out.println("No start");
+                break;
+            case NO_END:
+                System.out.println("No end");
+                break;
+            case SUCCESS:
+                System.out.println("Path found");
+                break;
         }
     }
 }
