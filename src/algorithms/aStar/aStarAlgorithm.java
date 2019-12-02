@@ -10,7 +10,7 @@ public class aStarAlgorithm extends Algorithm {
         super(map, start, end);
     }
 
-    public RET_CODE RunAlgorithm(Tile[][] tileMap){
+    public RET_CODE StartAlgorithm(Tile[][] tileMap){
 
 
         return RET_CODE.SUCCESS;

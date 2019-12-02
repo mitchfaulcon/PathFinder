@@ -22,8 +22,12 @@ public class Tile extends Pane {
      * Sets the cell colour depending on the currently selected drawing mode
      */
     public void UpdateTileStyle(TileStyle drawingMode) {
-        tileStyle = drawingMode;
 
+        //Don't update tile to searched/path found if it is a wall, start, or finish tile
+        if ((drawingMode == TileStyle.SEARCHED || drawingMode == TileStyle.PATH) &&
+                (tileStyle == TileStyle.WALL || tileStyle == TileStyle.START || tileStyle == TileStyle.FINISH)) return;
+
+        tileStyle = drawingMode;
         switch (tileStyle) {
             case NONE:
                 setStyle(DEFAULT_STYLE);

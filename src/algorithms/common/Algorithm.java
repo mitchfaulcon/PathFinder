@@ -15,5 +15,5 @@ public abstract class Algorithm {
         this.end = end;
     }
 
-    public abstract RET_CODE RunAlgorithm(Tile[][] tileMap);
+    public abstract RET_CODE StartAlgorithm(Tile[][] tileMap);
 }

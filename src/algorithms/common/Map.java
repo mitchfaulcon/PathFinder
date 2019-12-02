@@ -27,7 +27,7 @@ public class Map {
 
     }
 
-    public RET_CODE SetMap(Tile[][] tileMap /*, Algorithm algorithm*/) {
+    public RET_CODE RunAlgorithm(Tile[][] tileMap /*, Algorithm algorithm*/) {
         int rows = tileMap.length;
         int cols = tileMap[0].length;
 

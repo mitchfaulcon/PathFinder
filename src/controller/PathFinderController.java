@@ -110,7 +110,7 @@ public class PathFinderController implements Initializable {
                     t.UpdateTileStyle(TileStyle.NONE);
                 }
 
-                //If drawing start or finish point, reset style for all other tiles in grid
+                //If drawing start or finish point, delete previous start or finish points
                 if (t.GetTileStyle() == TileStyle.START && drawingMode == TileStyle.START) {
                     t.UpdateTileStyle(TileStyle.NONE);
                 }
@@ -149,7 +149,7 @@ public class PathFinderController implements Initializable {
     }
 
     public void OnGoButton() {
-        RET_CODE ret = Map.GetInstance().SetMap(tileGrid);
+        RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid);
 
         switch (ret){
             case NO_PATH:
