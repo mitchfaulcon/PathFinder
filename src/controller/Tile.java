@@ -8,7 +8,7 @@ public class Tile extends Pane {
     private static final String DEFAULT_STYLE = "-fx-background-color: white;" + TILE_BORDER_STYLE;
     private static final String WALL_STYLE = "-fx-background-color: grey;" + TILE_BORDER_STYLE;
     private static final String START_STYLE = "-fx-background-color: dodgerblue;" + TILE_BORDER_STYLE;
-    private static final String FINISH_STYLE = "-fx-background-color: green;" + TILE_BORDER_STYLE;
+    private static final String FINISH_STYLE = "-fx-background-color: rgb(255,36,67);" + TILE_BORDER_STYLE;
 
     private int x;
     private int y;
@@ -40,5 +40,9 @@ public class Tile extends Pane {
                 setStyle(WALL_STYLE);
                 break;
         }
+    }
+
+    public TileStyle GetTileStyle() {
+        return tileStyle;
     }
 }
