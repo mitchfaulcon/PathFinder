@@ -37,10 +37,11 @@
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="350.7999633789062" minHeight="10.0" prefHeight="111.60002059936524" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="135.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="185.00001220703126" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="304.1999877929687" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="350.7999633789062" minHeight="10.0" prefHeight="97.39998626708984" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="121.06669616699219" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="195.3333190917969" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="102.46665039062503" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="209.13334960937493" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PathFinder" textAlignment="CENTER" translateY="10.0" wrappingWidth="334.1368805170059" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -54,8 +55,8 @@
                            <stops>
                               <Stop color="#00000082" />
                               <Stop color="#0000004d" offset="0.007633587786259542" />
-                              <Stop color="#717171" offset="0.35267175572519055" />
-                              <Stop color="#717171" offset="0.6637090871065564" />
+                              <Stop color="BLACK" offset="0.3513256803216593" />
+                              <Stop color="BLACK" offset="0.6611758463160733" />
                               <Stop color="#0000004b" offset="1.0" />
                            </stops>
                         </LinearGradient>
@@ -127,9 +128,32 @@
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXButton fx:id="goButton" onAction="#OnGoButton" prefHeight="46.0" prefWidth="165.0" style="-fx-background-color: limegreen;" text="GO" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                  <JFXButton fx:id="goButton" onAction="#OnGoButton" prefHeight="46.0" prefWidth="165.0" style="-fx-background-color: limegreen;" text="GO" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                      <font>
                         <Font name="System Bold" size="20.0" />
+                     </font>
+                  </JFXButton>
+                  <Line endX="204.8928985595703" endY="0.5929016470909119" startX="-100.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="BOTTOM">
+                     <stroke>
+                        <LinearGradient endX="1.0" endY="1.0">
+                           <stops>
+                              <Stop color="#00000082" />
+                              <Stop color="#0000004d" offset="0.007633587786259542" />
+                              <Stop color="#717171" offset="0.35267175572519055" />
+                              <Stop color="#717171" offset="0.6637090871065564" />
+                              <Stop color="#0000004b" offset="1.0" />
+                           </stops>
+                        </LinearGradient>
+                     </stroke>
+                  </Line>
+                  <JFXButton fx:id="saveButton" onAction="#onSave" prefHeight="42.0" prefWidth="120.0" style="-fx-border-color: black; -fx-background-color: rgb(220,220,220);" text="Save Graph" translateX="-75.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="loadButton" onAction="#onLoad" prefHeight="42.0" prefWidth="122.0" style="-fx-border-color: black; -fx-background-color: rgb(220,220,220);" text="Load Graph" translateX="75.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="18.0" />
                      </font>
                   </JFXButton>
                </children>

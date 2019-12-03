@@ -7,15 +7,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import algorithms.common.Map.RET_CODE;
+import javafx.stage.FileChooser;
+import javafx.scene.control.Alert.AlertType;
 
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PathFinderController implements Initializable {
 
@@ -27,17 +33,24 @@ public class PathFinderController implements Initializable {
     @FXML JFXToggleNode StartToggle;
     @FXML JFXToggleNode FinishToggle;
     @FXML JFXButton goButton;
+    @FXML JFXButton saveButton;
+    @FXML JFXButton loadButton;
 
-    public enum TileStyle {START, FINISH, WALL, NONE, SEARCHED, PATH}
+    private static int MINROWS = 5;
+    private static int MINCOLUMNS = 5;
+    private static int MAXROWS = 80;
+    private static int MAXCOLUMNS = 80;
+
+    public enum TileStyle {START, FINISH, WALL, NONE, SEARCHED, PATH;}
+
     private TileStyle drawingMode;
-
     private Tile[][] tileGrid;               //Stores all tiles
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //Setup spinners
-        rowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 80));
-        colSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 80));
+        rowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINROWS, MAXROWS));
+        colSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINCOLUMNS, MAXCOLUMNS));
         rowSpinner.valueProperty().addListener((observer, oldValue, newValue)->UpdateGrid());
         colSpinner.valueProperty().addListener((observer, oldValue, newValue)->UpdateGrid());
         rowSpinner.getValueFactory().setValue(10);
@@ -46,6 +59,8 @@ public class PathFinderController implements Initializable {
         //Erase mode is default
         drawingMode = TileStyle.NONE;
         EraserToggle.setSelected(true);
+
+        saveButton.setDisable(true);
     }
 
     private void UpdateGrid() {
@@ -84,6 +99,8 @@ public class PathFinderController implements Initializable {
         }
 
         AddCellListeners();
+
+        saveButton.setDisable(IsGridEmpty());
     }
 
     private void AddCellListeners(){
@@ -120,9 +137,26 @@ public class PathFinderController implements Initializable {
             }
         }
         tile.UpdateTileStyle(drawingMode);
+
+        saveButton.setDisable(IsGridEmpty());
     }
 
-    public void OnDrawToggle(ActionEvent actionEvent) {
+    /**
+     * @return True if each tile on the grid is empty
+     *         False if there is at least one of a wall, start, or finish tile
+     */
+    private boolean IsGridEmpty(){
+        for (Tile[] tiles : tileGrid) {
+            for (Tile t : tiles) {
+                TileStyle tileStyle = t.GetTileStyle();
+                if (tileStyle == TileStyle.WALL || tileStyle == TileStyle.START || tileStyle == TileStyle.FINISH) return false;
+            }
+        }
+        return true;
+    }
+
+    @FXML
+    private void OnDrawToggle(ActionEvent actionEvent) {
         if (actionEvent.getSource() instanceof JFXToggleNode){
             if (actionEvent.getSource().equals(EraserToggle)){
                 if (drawingMode == TileStyle.NONE){
@@ -148,7 +182,8 @@ public class PathFinderController implements Initializable {
         }
     }
 
-    public void OnGoButton() {
+    @FXML
+    private void OnGoButton() {
         RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid);
 
         switch (ret){
@@ -165,5 +200,167 @@ public class PathFinderController implements Initializable {
                 System.out.println("Path found");
                 break;
         }
+    }
+
+    @FXML
+    private void onSave() {
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter for FileChooser to PathFinder Map files
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("PathFinder Map File (*.pfm)", "*.pfm");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+
+        //Show save dialog
+        File file = fileChooser.showSaveDialog(saveButton.getScene().getWindow());
+
+        if (file != null) {
+            SaveToFile(file);
+        }
+    }
+
+    private void SaveToFile(File file) {
+        try {
+            PrintWriter writer;
+            writer = new PrintWriter(file);
+
+            for (int row = 0; row < tileGrid.length; row++) {
+                StringBuilder sb = new StringBuilder("");
+                for (int col = 0; col < tileGrid[0].length; col++) {
+                    TileStyle tileStyle = tileGrid[row][col].GetTileStyle();
+                    switch (tileStyle) {
+                        case SEARCHED:  //Fall through
+                        case PATH:      //Fall through
+                        case NONE:
+                            sb.append("0");
+                            break;
+                        case WALL:
+                            sb.append("w");
+                            break;
+                        case START:
+                            sb.append("s");
+                            break;
+                        case FINISH:
+                            sb.append("f");
+                            break;
+                    }
+                }
+                writer.print(sb);
+                if (row < tileGrid.length - 1) writer.print("\n");
+            }
+
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(PathFinderController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    private void onLoad() {
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter for FileChooser to PathFinder Map files
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("PathFinder Map Files (*.pfm)", "*.pfm");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+
+        //Show save dialog
+        File file = fileChooser.showOpenDialog(saveButton.getScene().getWindow());
+
+        if (file != null) {
+            LoadFile(file);
+        }
+    }
+
+    private void LoadFile(File file) {
+        try {
+            FileReader fileReader = new FileReader(file);
+
+            //Get dimensions of loaded map
+            int rows = 0;
+            int cols = -1;
+            BufferedReader reader = new BufferedReader(fileReader);
+            String line = reader.readLine();
+            while (line != null) {
+                rows++;
+
+                //Ensure line only contains legal characters
+                if (!line.matches("[0wsf]*")){
+                    ShowError("File contains illegal character (line " + rows + ")");
+                    return;
+                }
+
+                //Ensure number of columns is the same in every row
+                if (cols != -1 && line.length() != cols){
+                    ShowError("Number of columns is not consistent throughout file");
+                    return;
+                } else {
+                    cols = line.length();
+                }
+
+                line = reader.readLine();
+            }
+            //Ensure number of rows are within allowed range
+            if (rows > MAXROWS){
+                ShowError("Number of rows is too large");
+                return;
+            }
+            if (rows < MINROWS){
+                ShowError("Number of rows is too small");
+                return;
+            }
+            //Ensure number of columns are within allowed range
+            if (cols > MAXCOLUMNS){
+                ShowError("Number of columns is too large");
+                return;
+            }
+            if (cols < MINROWS){
+                ShowError("Number of columns is too small");
+                return;
+            }
+
+            //Automatically updates tileGrid
+            rowSpinner.getValueFactory().setValue(rows);
+            colSpinner.getValueFactory().setValue(cols);
+
+            //Convert file to correct tileGrid
+            fileReader = new FileReader(file);
+            reader = new BufferedReader(fileReader);
+            line = reader.readLine();
+            int row = 0;
+            while (line != null) {
+                int col = 0;
+
+                for (char c : line.toCharArray()) {
+                    switch (c) {
+                        case '0':
+                            tileGrid[row][col].UpdateTileStyle(TileStyle.NONE);
+                            break;
+                        case 'w':
+                            tileGrid[row][col].UpdateTileStyle(TileStyle.WALL);
+                            break;
+                        case 's':
+                            tileGrid[row][col].UpdateTileStyle(TileStyle.START);
+                            break;
+                        case 'f':
+                            tileGrid[row][col].UpdateTileStyle(TileStyle.FINISH);
+                            break;
+                    }
+                    col++;
+                }
+
+                row++;
+                line = reader.readLine();
+            }
+
+            saveButton.setDisable(IsGridEmpty());
+
+            reader.close();
+        } catch (IOException ex) {
+            Logger.getLogger(PathFinderController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void ShowError(String message) {
+        Alert alert = new Alert(AlertType.ERROR, message);
+        alert.showAndWait();
     }
 }
