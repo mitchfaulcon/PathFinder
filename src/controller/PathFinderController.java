@@ -41,7 +41,7 @@ public class PathFinderController implements Initializable {
     private static int MAXROWS = 80;
     private static int MAXCOLUMNS = 80;
 
-    public enum TileStyle {START, FINISH, WALL, NONE, SEARCHED, PATH;}
+    public enum TileStyle {START, FINISH, WALL, NONE, SEARCHED, PATH}
 
     private TileStyle drawingMode;
     private Tile[][] tileGrid;               //Stores all tiles
@@ -184,22 +184,25 @@ public class PathFinderController implements Initializable {
 
     @FXML
     private void OnGoButton() {
-        RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid);
+        goButton.setDisable(true);      //Disable Go button while algorithm is running
 
+        RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid);
         switch (ret){
             case NO_PATH:
-                System.out.println("No path");
+                ShowError("No path could be found");
                 break;
             case NO_START:
-                System.out.println("No start");
+                ShowError("There is no start tile on the grid");
                 break;
             case NO_END:
-                System.out.println("No end");
+                ShowError("There is no goal tile on the grid");
                 break;
             case SUCCESS:
                 System.out.println("Path found");
                 break;
         }
+
+        goButton.setDisable(false);     //Re-enable Go button
     }
 
     @FXML
@@ -224,7 +227,7 @@ public class PathFinderController implements Initializable {
             writer = new PrintWriter(file);
 
             for (int row = 0; row < tileGrid.length; row++) {
-                StringBuilder sb = new StringBuilder("");
+                StringBuilder sb = new StringBuilder();
                 for (int col = 0; col < tileGrid[0].length; col++) {
                     TileStyle tileStyle = tileGrid[row][col].GetTileStyle();
                     switch (tileStyle) {
