@@ -11,6 +11,7 @@ public class DFSAlgorithm extends Algorithm {
     }
 
     public RET_CODE StartAlgorithm(Tile[][] tileMap) {
-        return RET_CODE.SUCCESS;
+        System.out.println("Running DFS algorithm");
+        return RET_CODE.NO_PATH;
     }
 }

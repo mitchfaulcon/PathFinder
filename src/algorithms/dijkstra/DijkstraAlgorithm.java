@@ -11,6 +11,7 @@ public class DijkstraAlgorithm extends Algorithm {
     }
 
     public RET_CODE StartAlgorithm(Tile[][] tileMap) {
-        return RET_CODE.SUCCESS;
+        System.out.println("Running Dijkstra algorithm");
+        return RET_CODE.NO_PATH;
     }
 }

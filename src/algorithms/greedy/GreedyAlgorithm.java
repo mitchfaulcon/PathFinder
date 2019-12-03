@@ -11,6 +11,7 @@ public class GreedyAlgorithm extends Algorithm {
     }
 
     public RET_CODE StartAlgorithm(Tile[][] tileMap) {
-        return RET_CODE.SUCCESS;
+        System.out.println("Running Greedy algorithm");
+        return RET_CODE.NO_PATH;
     }
 }

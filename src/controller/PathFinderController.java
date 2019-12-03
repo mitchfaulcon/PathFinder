@@ -2,6 +2,7 @@ package controller;
 
 import algorithms.common.Map;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.layout.RowConstraints;
 import algorithms.common.Map.RET_CODE;
 import javafx.stage.FileChooser;
 import javafx.scene.control.Alert.AlertType;
+import algorithms.common.AlgorithmFactory.AlgorithmType;
 
 import java.io.*;
 import java.net.URL;
@@ -35,6 +37,7 @@ public class PathFinderController implements Initializable {
     @FXML JFXButton goButton;
     @FXML JFXButton saveButton;
     @FXML JFXButton loadButton;
+    @FXML JFXComboBox<String> algorithmComboBox;
 
     private static int MINROWS = 5;
     private static int MINCOLUMNS = 5;
@@ -45,6 +48,8 @@ public class PathFinderController implements Initializable {
 
     private TileStyle drawingMode;
     private Tile[][] tileGrid;               //Stores all tiles
+
+    private AlgorithmType currentAlgorithm;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -61,6 +66,14 @@ public class PathFinderController implements Initializable {
         EraserToggle.setSelected(true);
 
         saveButton.setDisable(true);
+
+        //Setup algorithm selection combo box
+        algorithmComboBox.getItems().add("A*");
+        algorithmComboBox.getItems().add("BFS");
+        algorithmComboBox.getItems().add("DFS");
+        algorithmComboBox.getItems().add("Dijkstra");
+        algorithmComboBox.getItems().add("Greedy");
+        goButton.setDisable(true);      //Disable Go button until algorithm is selected
     }
 
     private void UpdateGrid() {
@@ -186,7 +199,7 @@ public class PathFinderController implements Initializable {
     private void OnGoButton() {
         goButton.setDisable(true);      //Disable Go button while algorithm is running
 
-        RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid);
+        RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid, currentAlgorithm);
         switch (ret){
             case NO_PATH:
                 ShowError("No path could be found");
@@ -206,7 +219,7 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void onSave() {
+    private void OnSave() {
         FileChooser fileChooser = new FileChooser();
 
         //Set extension filter for FileChooser to PathFinder Map files
@@ -258,7 +271,7 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void onLoad() {
+    private void OnLoad() {
         FileChooser fileChooser = new FileChooser();
 
         //Set extension filter for FileChooser to PathFinder Map files
@@ -365,5 +378,28 @@ public class PathFinderController implements Initializable {
     private void ShowError(String message) {
         Alert alert = new Alert(AlertType.ERROR, message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void OnAlgorithmSelect() {
+        String selected = algorithmComboBox.getSelectionModel().getSelectedItem();
+        switch (selected) {
+            case "A*":
+                currentAlgorithm = AlgorithmType.ASTAR;
+                break;
+            case "BFS":
+                currentAlgorithm = AlgorithmType.BFS;
+                break;
+            case "DFS":
+                currentAlgorithm = AlgorithmType.DFS;
+                break;
+            case "Dijkstra":
+                currentAlgorithm = AlgorithmType.DIJKSTRA;
+                break;
+            case "Greedy":
+                currentAlgorithm = AlgorithmType.GREEDY;
+                break;
+        }
+        goButton.setDisable(false);     //Algorithm has been selected so Go button can be clicked
     }
 }

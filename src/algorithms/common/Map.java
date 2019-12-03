@@ -2,32 +2,31 @@ package algorithms.common;
 
 import controller.Tile;
 import controller.PathFinderController.TileStyle;
+import algorithms.common.AlgorithmFactory.AlgorithmType;
 
 /**
  * Singleton class to store instance of map to perform path finding algorithm on
  */
 public class Map {
-    public enum RET_CODE {SUCCESS, NO_PATH, NO_START, NO_END}
-
     private static Map instance = new Map();    //Singleton
-
-    //2D array to store data about map to perform path-finding algorithm on.
-    // 0 - possible path
-    // 1 - wall / not traversable
-    private int[][] grid;
-    
-    private int[] start;
-    private int[] end;
 
     public static Map GetInstance() {
         return instance;
     }
 
-    private Map () {
+    private Map () {}
 
-    }
+    public enum RET_CODE {SUCCESS, NO_PATH, NO_START, NO_END}
 
-    public RET_CODE RunAlgorithm(Tile[][] tileMap /*, Algorithm algorithm*/) {
+    //2D array to store data about map to perform path-finding algorithm on.
+    // 0 - possible path
+    // 1 - wall / not traversable
+    private int[][] grid;
+
+    private int[] start;
+    private int[] end;
+
+    public RET_CODE RunAlgorithm(Tile[][] tileMap, AlgorithmType algorithmToRun) {
         int rows = tileMap.length;
         int cols = tileMap[0].length;
 
@@ -68,12 +67,15 @@ public class Map {
 
         DisplayMap();
 
-        //Perform algorithm
-            //Return NO_PATH if couldn't be found
-
-        return RET_CODE.SUCCESS;
+        //Generate correct algorithm from factory
+        Algorithm algorithm = new AlgorithmFactory().GenerateAlgorithm(algorithmToRun, grid, start, end);
+        //Perform algorithm, return NO_PATH if path couldn't be found
+        return algorithm.StartAlgorithm(tileMap);
     }
 
+    /**
+     * Helper function to display representation of map in terminal output
+     */
     private void DisplayMap(){
         for (int[] row : grid) {
             for (int cell : row) {

@@ -11,8 +11,7 @@ public class aStarAlgorithm extends Algorithm {
     }
 
     public RET_CODE StartAlgorithm(Tile[][] tileMap){
-
-
-        return RET_CODE.SUCCESS;
+        System.out.println("Running A* algorithm");
+        return RET_CODE.NO_PATH;
     }
 }
