@@ -312,7 +312,7 @@ public class PathFinderController implements Initializable {
                 ShowError("Number of columns is too large");
                 return;
             }
-            if (cols < MINROWS){
+            if (cols < MINCOLUMNS){
                 ShowError("Number of columns is too small");
                 return;
             }
