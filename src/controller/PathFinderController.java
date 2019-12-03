@@ -21,6 +21,7 @@ import algorithms.common.AlgorithmFactory.AlgorithmType;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -218,16 +219,24 @@ public class PathFinderController implements Initializable {
         goButton.setDisable(false);     //Re-enable Go button
     }
 
-    @FXML
-    private void OnSave() {
+    private FileChooser CreateFileChooser() {
         FileChooser fileChooser = new FileChooser();
+
+        //Start the FileChooser in the current directory rather than the root
+        String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+        fileChooser.setInitialDirectory(new File(currentPath));
 
         //Set extension filter for FileChooser to PathFinder Map files
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("PathFinder Map File (*.pfm)", "*.pfm");
         fileChooser.getExtensionFilters().add(extensionFilter);
 
+        return fileChooser;
+    }
+
+    @FXML
+    private void OnSave() {
         //Show save dialog
-        File file = fileChooser.showSaveDialog(saveButton.getScene().getWindow());
+        File file = CreateFileChooser().showSaveDialog(saveButton.getScene().getWindow());
 
         if (file != null) {
             SaveToFile(file);
@@ -272,14 +281,8 @@ public class PathFinderController implements Initializable {
 
     @FXML
     private void OnLoad() {
-        FileChooser fileChooser = new FileChooser();
-
-        //Set extension filter for FileChooser to PathFinder Map files
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("PathFinder Map Files (*.pfm)", "*.pfm");
-        fileChooser.getExtensionFilters().add(extensionFilter);
-
-        //Show save dialog
-        File file = fileChooser.showOpenDialog(saveButton.getScene().getWindow());
+        //Show load dialog
+        File file = CreateFileChooser().showOpenDialog(saveButton.getScene().getWindow());
 
         if (file != null) {
             LoadFile(file);
@@ -333,8 +336,7 @@ public class PathFinderController implements Initializable {
                 return;
             }
 
-            //Automatically updates tileGrid
-            rowSpinner.getValueFactory().setValue(rows);
+            rowSpinner.getValueFactory().setValue(rows);        //Automatically updates tileGrid via spinner listener
             colSpinner.getValueFactory().setValue(cols);
 
             //Convert file to correct tileGrid
