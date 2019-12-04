@@ -35,6 +35,8 @@ public class PathFinderController implements Initializable {
     @FXML JFXToggleNode WallToggle;
     @FXML JFXToggleNode StartToggle;
     @FXML JFXToggleNode FinishToggle;
+    @FXML JFXToggleNode WeightedToggle;
+    @FXML Spinner<Integer> tileWeightSpinner;
     @FXML JFXButton goButton;
     @FXML JFXButton saveButton;
     @FXML JFXButton loadButton;
@@ -45,16 +47,17 @@ public class PathFinderController implements Initializable {
     private static int MAXROWS = 80;
     private static int MAXCOLUMNS = 80;
 
-    public enum TileStyle {START, FINISH, WALL, NONE, SEARCHED, PATH}
+    public enum TileStyle {START, FINISH, WALL, NONE, WEIGHTED, SEARCHED, PATH}
 
     private TileStyle drawingMode;
+    private int weightedTileValue;
     private Tile[][] tileGrid;               //Stores all tiles
 
     private AlgorithmType currentAlgorithm;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //Setup spinners
+        //Setup grid size spinners
         rowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINROWS, MAXROWS));
         colSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINCOLUMNS, MAXCOLUMNS));
         rowSpinner.valueProperty().addListener((observer, oldValue, newValue)->UpdateGrid());
@@ -62,9 +65,18 @@ public class PathFinderController implements Initializable {
         rowSpinner.getValueFactory().setValue(10);
         colSpinner.getValueFactory().setValue(10);
 
-        //Erase mode is default
-        drawingMode = TileStyle.NONE;
-        EraserToggle.setSelected(true);
+        //Start mode is default
+        drawingMode = TileStyle.START;
+        StartToggle.setSelected(true);
+        tileWeightSpinner.setDisable(true);
+        weightedTileValue = 2;
+
+        //Setup wall weight spinner
+        tileWeightSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2,100));
+        tileWeightSpinner.valueProperty().addListener((observer, oldValue, newValue) -> {
+            weightedTileValue = newValue;
+            drawingMode = TileStyle.WEIGHTED;
+        });
 
         saveButton.setDisable(true);
 
@@ -136,8 +148,8 @@ public class PathFinderController implements Initializable {
     private void UpdateTile(Tile tile){
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
-                //Remove previous paths
-                if (t.GetTileStyle() == TileStyle.SEARCHED || t.GetTileStyle() == TileStyle.PATH) {
+                //Remove previous searched/path tiles
+                if (t.HasBeenSearched()) {
                     t.UpdateTileStyle(TileStyle.NONE);
                 }
 
@@ -150,7 +162,12 @@ public class PathFinderController implements Initializable {
                 }
             }
         }
-        tile.UpdateTileStyle(drawingMode);
+
+        if (drawingMode == TileStyle.WEIGHTED) {
+            tile.UpdateTileStyle(TileStyle.WEIGHTED, weightedTileValue);
+        } else {
+            tile.UpdateTileStyle(drawingMode);
+        }
 
         saveButton.setDisable(IsGridEmpty());
     }
@@ -163,7 +180,7 @@ public class PathFinderController implements Initializable {
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
                 TileStyle tileStyle = t.GetTileStyle();
-                if (tileStyle == TileStyle.WALL || tileStyle == TileStyle.START || tileStyle == TileStyle.FINISH) return false;
+                if (tileStyle == TileStyle.WALL || tileStyle == TileStyle.START || tileStyle == TileStyle.FINISH || tileStyle == TileStyle.WEIGHTED) return false;
             }
         }
         return true;
@@ -172,6 +189,7 @@ public class PathFinderController implements Initializable {
     @FXML
     private void OnDrawToggle(ActionEvent actionEvent) {
         if (actionEvent.getSource() instanceof JFXToggleNode){
+            tileWeightSpinner.setDisable(true);
             if (actionEvent.getSource().equals(EraserToggle)){
                 if (drawingMode == TileStyle.NONE){
                     EraserToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
@@ -192,6 +210,12 @@ public class PathFinderController implements Initializable {
                     FinishToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
                 }
                 drawingMode = TileStyle.FINISH;
+            } else if (actionEvent.getSource().equals(WeightedToggle)){
+                if (drawingMode == TileStyle.WEIGHTED){
+                    WeightedToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
+                }
+                tileWeightSpinner.setDisable(false);    //Only enable tile weight selector when drawing weighted tiles
+                drawingMode = TileStyle.WEIGHTED;
             }
         }
     }
@@ -199,6 +223,15 @@ public class PathFinderController implements Initializable {
     @FXML
     private void OnGoButton() {
         goButton.setDisable(true);      //Disable Go button while algorithm is running
+
+        //Remove previous searched/path tiles
+        for (Tile[] tiles : tileGrid) {
+            for (Tile t : tiles) {
+                if (t.HasBeenSearched()) {
+                    t.UpdateTileStyle(TileStyle.NONE);
+                }
+            }
+        }
 
         RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid, currentAlgorithm);
         switch (ret){
@@ -217,6 +250,7 @@ public class PathFinderController implements Initializable {
         }
 
         goButton.setDisable(false);     //Re-enable Go button
+        drawingMode = TileStyle.PATH;
     }
 
     private FileChooser CreateFileChooser() {

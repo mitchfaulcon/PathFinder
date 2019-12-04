@@ -39,10 +39,10 @@
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints maxHeight="350.7999633789062" minHeight="10.0" prefHeight="115.00000305175782" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="123.99998779296875" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="192.60000610351562" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="87.19999389648433" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="203.20000610351565" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="102.66667175292967" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="228.333349609375" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="88.06665039062494" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="663.2666664123535" minHeight="10.0" prefHeight="186.933349609375" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PathFinder" textAlignment="CENTER" wrappingWidth="334.1368805170059" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
@@ -68,18 +68,18 @@
                         </LinearGradient>
                      </stroke>
                   </Line>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rows" translateX="50.0" translateY="-25.0" wrappingWidth="162.93672370910645" GridPane.rowIndex="1">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Rows" translateX="60.0" translateY="-22.0" wrappingWidth="162.93672370910645" GridPane.rowIndex="1">
                      <font>
-                        <Font size="27.0" />
+                        <Font size="24.0" />
                      </font>
                   </Text>
-                  <Spinner fx:id="rowSpinner" editable="true" prefHeight="36.0" prefWidth="82.0" translateX="200.0" translateY="-25.0" GridPane.rowIndex="1" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Columns" translateX="50.0" translateY="25.0" wrappingWidth="162.93672370910645" GridPane.rowIndex="1">
+                  <Spinner fx:id="rowSpinner" editable="true" prefHeight="30.0" prefWidth="83.0" translateX="190.0" translateY="-22.0" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Columns" translateX="60.0" translateY="22.0" wrappingWidth="162.93672370910645" GridPane.rowIndex="1">
                      <font>
-                        <Font size="27.0" />
+                        <Font size="24.0" />
                      </font>
                   </Text>
-                  <Spinner fx:id="colSpinner" editable="true" prefHeight="36.0" prefWidth="82.0" translateX="200.0" translateY="25.0" GridPane.rowIndex="1" />
+                  <Spinner fx:id="colSpinner" editable="true" prefHeight="30.0" prefWidth="82.0" translateX="190.0" translateY="22.0" GridPane.rowIndex="1" />
                   <Line endX="204.8928985595703" endY="0.5929016470909119" startX="-100.0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
                      <stroke>
                         <LinearGradient endX="1.0" endY="1.0">
@@ -95,32 +95,38 @@
                   </Line>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current Draw Mode:" textAlignment="CENTER" translateY="10.0" wrappingWidth="263.73677253723145" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
                      <font>
-                        <Font size="27.0" />
+                        <Font size="24.0" />
                      </font>
                   </Text>
-                  <JFXToggleNode fx:id="EraserToggle" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Erase" textAlignment="CENTER" translateX="-70.0" translateY="-10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="StartToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: dodgerblue; -fx-border-color: black;" text="Start" textAlignment="CENTER" textFill="WHITE" translateX="-70.0" translateY="-45.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
                      <toggleGroup>
                         <ToggleGroup fx:id="DRAWMODE" />
                      </toggleGroup>
+                  </JFXToggleNode>
+                  <JFXToggleNode fx:id="FinishToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: rgb(255,36,67); -fx-border-color: black;" text="Goal" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="70.0" translateY="-45.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="WallToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: grey; -jfx-toggle-color: rgb(100,100,100); -fx-border-color: black;" text="Wall" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="70.0" translateY="-10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="WallToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: grey; -jfx-toggle-color: rgb(100,100,100); -fx-border-color: black;" text="Wall" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="StartToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: dodgerblue; -fx-border-color: black;" text="Start" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="50.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="EraserToggle" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Erase" textAlignment="CENTER" toggleGroup="$DRAWMODE" translateX="70.0" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="FinishToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: rgb(255,36,67); -fx-border-color: black;" text="Goal" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="70.0" translateY="50.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Weight:" textAlignment="CENTER" translateX="70.0" translateY="55.0" wrappingWidth="60.536699295043945" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="16.0" />
                      </font>
-                  </JFXToggleNode>
+                  </Text>
+                  <Spinner fx:id="tileWeightSpinner" editable="true" prefHeight="0.0" prefWidth="82.0" translateX="70.0" translateY="80.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
                   <Line endX="204.8928985595703" endY="0.5929016470909119" startX="-100.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                      <stroke>
                         <LinearGradient endX="1.0" endY="1.0">
@@ -159,7 +165,7 @@
                   </Line>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Choose Algorithm" textAlignment="CENTER" translateY="-70.0" wrappingWidth="263.73677253723145" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                      <font>
-                        <Font size="27.0" />
+                        <Font size="24.0" />
                      </font>
                   </Text>
                   <JFXComboBox fx:id="algorithmComboBox" onAction="#OnAlgorithmSelect" prefHeight="42.0" prefWidth="262.0" promptText="Select" style="-fx-border-color: lightgrey; -fx-font-size: 15;" translateY="-20.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
@@ -168,6 +174,11 @@
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </JFXButton>
+                  <JFXToggleNode fx:id="WeightedToggle" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Weighted Tile" textAlignment="CENTER" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="65.0" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </JFXToggleNode>
                </children>
             </GridPane>
             <GridPane GridPane.columnIndex="1">

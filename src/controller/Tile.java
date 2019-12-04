@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import controller.PathFinderController.TileStyle;
 
@@ -13,6 +14,8 @@ public class Tile extends Pane {
     private static final String PATH_STYLE = "-fx-background-color: rgb(69,255,38);" + TILE_BORDER_STYLE;
 
     private TileStyle tileStyle = TileStyle.NONE;
+    private int weight = 1;     //Default weight
+    private boolean isSearched = false;
 
     public Tile () {
         setStyle(DEFAULT_STYLE);
@@ -21,16 +24,39 @@ public class Tile extends Pane {
     /**
      * Sets the cell colour depending on the currently selected drawing mode
      */
-    public void UpdateTileStyle(TileStyle drawingMode) {
+    public void UpdateTileStyle(TileStyle drawingMode, int weightedTileValue) {
 
         //Don't update tile to searched/path found if it is a wall, start, or finish tile
         if ((drawingMode == TileStyle.SEARCHED || drawingMode == TileStyle.PATH) &&
                 (tileStyle == TileStyle.WALL || tileStyle == TileStyle.START || tileStyle == TileStyle.FINISH)) return;
 
-        tileStyle = drawingMode;
-        switch (tileStyle) {
+        if (isSearched && drawingMode == TileStyle.NONE && tileStyle == TileStyle.WEIGHTED) {
+            setStyle(DEFAULT_STYLE);
+            isSearched = false;
+            return;
+        }
+
+        //Remove labels
+        if (drawingMode != TileStyle.SEARCHED && drawingMode != TileStyle.PATH) getChildren().clear();
+        isSearched = false;
+        weight = weightedTileValue;
+
+        switch (drawingMode) {
             case NONE:
                 setStyle(DEFAULT_STYLE);
+                break;
+            case WEIGHTED:
+                setStyle(DEFAULT_STYLE);
+                //weight = weightedTileValue;
+                if (weight == 1) {
+                    tileStyle = TileStyle.NONE;
+                    break;
+                }
+                //Add label with weight to center of tile
+                Label label = new Label(Integer.toString(weight));
+                label.layoutXProperty().bind(this.widthProperty().subtract(label.widthProperty()).divide(2));
+                label.layoutYProperty().bind(this.heightProperty().subtract(label.heightProperty()).divide(2));
+                getChildren().add(label);
                 break;
             case START:
                 setStyle(START_STYLE);
@@ -43,14 +69,29 @@ public class Tile extends Pane {
                 break;
             case SEARCHED:
                 setStyle(SEARCHED_STYLE);
-                break;
+                isSearched = true;
+                return;     //Don't update tileStyle field, only background colour
             case PATH:
                 setStyle(PATH_STYLE);
-                break;
+                isSearched = true;
+                return;     //Don't update tileStyle field, only background colour
         }
+        tileStyle = drawingMode;
+    }
+
+    public void UpdateTileStyle(TileStyle drawingMode) {
+        UpdateTileStyle(drawingMode, 1);
     }
 
     public TileStyle GetTileStyle() {
         return tileStyle;
+    }
+
+    public int GetWeight() {
+        return weight;
+    }
+
+    public boolean HasBeenSearched() {
+        return isSearched;
     }
 }

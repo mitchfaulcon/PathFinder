@@ -43,11 +43,12 @@ public class Map {
                 switch (tileStyle){
                     case SEARCHED:  //Fall through
                     case PATH:      //Fall through
-                    case NONE:
-                        grid[row][col] = 0;
+                    case NONE:      //Fall through
+                    case WEIGHTED:
+                        grid[row][col] = tileMap[row][col].GetWeight();
                         break;
                     case WALL:
-                        grid[row][col] = 1;
+                        grid[row][col] = -1;
                         break;
                     case START:
                         start[0] = row;
