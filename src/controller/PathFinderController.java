@@ -31,16 +31,17 @@ public class PathFinderController implements Initializable {
     @FXML Spinner<Integer> rowSpinner;
     @FXML Spinner<Integer> colSpinner;
     @FXML GridPane graphGrid;
-    @FXML JFXToggleNode EraserToggle;
-    @FXML JFXToggleNode WallToggle;
-    @FXML JFXToggleNode StartToggle;
-    @FXML JFXToggleNode FinishToggle;
-    @FXML JFXToggleNode WeightedToggle;
+    @FXML JFXToggleNode eraserToggle;
+    @FXML JFXToggleNode wallToggle;
+    @FXML JFXToggleNode startToggle;
+    @FXML JFXToggleNode finishToggle;
+    @FXML JFXToggleNode weightedToggle;
     @FXML Spinner<Integer> tileWeightSpinner;
-    @FXML JFXButton goButton;
     @FXML JFXButton saveButton;
     @FXML JFXButton loadButton;
     @FXML JFXComboBox<String> algorithmComboBox;
+    @FXML JFXButton goButton;
+    @FXML JFXButton stopButton;
 
     private static int MINROWS = 5;
     private static int MINCOLUMNS = 5;
@@ -67,7 +68,7 @@ public class PathFinderController implements Initializable {
 
         //Start mode is default
         drawingMode = TileStyle.START;
-        StartToggle.setSelected(true);
+        startToggle.setSelected(true);
         tileWeightSpinner.setDisable(true);
         weightedTileValue = 2;
 
@@ -87,6 +88,7 @@ public class PathFinderController implements Initializable {
         algorithmComboBox.getItems().add("Dijkstra");
         algorithmComboBox.getItems().add("Greedy");
         goButton.setDisable(true);      //Disable Go button until algorithm is selected
+        stopButton.setDisable(true);    //Disable Stop button until algorithm is running
     }
 
     private void UpdateGrid() {
@@ -190,29 +192,29 @@ public class PathFinderController implements Initializable {
     private void OnDrawToggle(ActionEvent actionEvent) {
         if (actionEvent.getSource() instanceof JFXToggleNode){
             tileWeightSpinner.setDisable(true);
-            if (actionEvent.getSource().equals(EraserToggle)){
+            if (actionEvent.getSource().equals(eraserToggle)){
                 if (drawingMode == TileStyle.NONE){
-                    EraserToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
+                    eraserToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
                 }
                 drawingMode = TileStyle.NONE;
-            } else if (actionEvent.getSource().equals(WallToggle)){
+            } else if (actionEvent.getSource().equals(wallToggle)){
                 if (drawingMode == TileStyle.WALL){
-                    WallToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
+                    wallToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
                 }
                 drawingMode = TileStyle.WALL;
-            } else if (actionEvent.getSource().equals(StartToggle)){
+            } else if (actionEvent.getSource().equals(startToggle)){
                 if (drawingMode == TileStyle.START){
-                    StartToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
+                    startToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
                 }
                 drawingMode = TileStyle.START;
-            } else if (actionEvent.getSource().equals(FinishToggle)){
+            } else if (actionEvent.getSource().equals(finishToggle)){
                 if (drawingMode == TileStyle.FINISH){
-                    FinishToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
+                    finishToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
                 }
                 drawingMode = TileStyle.FINISH;
-            } else if (actionEvent.getSource().equals(WeightedToggle)){
+            } else if (actionEvent.getSource().equals(weightedToggle)){
                 if (drawingMode == TileStyle.WEIGHTED){
-                    WeightedToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
+                    weightedToggle.setSelected(true);     //Don't let toggle get deselected when clicked again
                 }
                 tileWeightSpinner.setDisable(false);    //Only enable tile weight selector when drawing weighted tiles
                 drawingMode = TileStyle.WEIGHTED;
@@ -222,7 +224,19 @@ public class PathFinderController implements Initializable {
 
     @FXML
     private void OnGoButton() {
-        goButton.setDisable(true);      //Disable Go button while algorithm is running
+        //Disable all buttons while algorithm is running
+        rowSpinner.setDisable(true);
+        colSpinner.setDisable(true);
+        startToggle.setDisable(true);
+        finishToggle.setDisable(true);
+        wallToggle.setDisable(true);
+        eraserToggle.setDisable(true);
+        weightedToggle.setDisable(true);
+        tileWeightSpinner.setDisable(true);
+        saveButton.setDisable(true);
+        loadButton.setDisable(true);
+        goButton.setDisable(true);
+        stopButton.setDisable(false);   //And enable stop button
 
         //Remove previous searched/path tiles
         for (Tile[] tiles : tileGrid) {
@@ -249,8 +263,24 @@ public class PathFinderController implements Initializable {
                 break;
         }
 
-        goButton.setDisable(false);     //Re-enable Go button
-        drawingMode = TileStyle.PATH;
+        //Re-enable buttons when algorithm completed
+        rowSpinner.setDisable(false);
+        colSpinner.setDisable(false);
+        startToggle.setDisable(false);
+        finishToggle.setDisable(false);
+        wallToggle.setDisable(false);
+        eraserToggle.setDisable(false);
+        weightedToggle.setDisable(false);
+        tileWeightSpinner.setDisable(false);
+        saveButton.setDisable(false);
+        loadButton.setDisable(false);
+        goButton.setDisable(false);
+        stopButton.setDisable(true);   //And disable stop button
+    }
+
+    @FXML
+    private void OnStopButton() {
+        //TODO Stop visualisation
     }
 
     private FileChooser CreateFileChooser() {
