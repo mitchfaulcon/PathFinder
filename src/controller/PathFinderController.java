@@ -271,11 +271,31 @@ public class PathFinderController implements Initializable {
         wallToggle.setDisable(false);
         eraserToggle.setDisable(false);
         weightedToggle.setDisable(false);
-        tileWeightSpinner.setDisable(false);
         saveButton.setDisable(false);
         loadButton.setDisable(false);
         goButton.setDisable(false);
         stopButton.setDisable(true);   //And disable stop button
+
+        //Set previously selected button to be selected again
+        switch (drawingMode) {
+            case NONE:
+                eraserToggle.setSelected(true);
+                break;
+            case START:
+                startToggle.setSelected(true);
+                break;
+            case FINISH:
+                finishToggle.setSelected(true);
+                break;
+            case WALL:
+                wallToggle.setSelected(true);
+                break;
+            case WEIGHTED:
+                weightedToggle.setSelected(true);
+                tileWeightSpinner.setDisable(false);
+                break;
+        }
+
     }
 
     @FXML

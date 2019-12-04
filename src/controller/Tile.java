@@ -39,19 +39,20 @@ public class Tile extends Pane {
         //Remove labels
         if (drawingMode != TileStyle.SEARCHED && drawingMode != TileStyle.PATH) getChildren().clear();
         isSearched = false;
-        weight = weightedTileValue;
 
         switch (drawingMode) {
             case NONE:
+                weight = 1;
                 setStyle(DEFAULT_STYLE);
                 break;
             case WEIGHTED:
                 setStyle(DEFAULT_STYLE);
-                //weight = weightedTileValue;
-                if (weight == 1) {
+                if (weightedTileValue == 1) {
+                    //Just want to erase background
                     tileStyle = TileStyle.NONE;
                     break;
                 }
+                weight = weightedTileValue;
                 //Add label with weight to center of tile
                 Label label = new Label(Integer.toString(weight));
                 label.layoutXProperty().bind(this.widthProperty().subtract(label.widthProperty()).divide(2));

@@ -66,7 +66,7 @@ public class Map {
         if (!startFound) return RET_CODE.NO_START;
         if (!endFound) return RET_CODE.NO_END;
 
-        DisplayMap();
+        //DisplayMap();
 
         //Generate correct algorithm from factory
         Algorithm algorithm = new AlgorithmFactory().GenerateAlgorithm(algorithmToRun, grid, start, end);
