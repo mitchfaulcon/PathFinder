@@ -71,7 +71,7 @@ public class Map {
         //displayMap();
 
         //Generate correct algorithm from factory
-        algorithm = new AlgorithmFactory().generateAlgorithm(algorithmToRun, grid, start, end);
+        algorithm = new AlgorithmFactory().generateAlgorithm(algorithmToRun, grid, start, end, tileMap);
 
         return RET_CODE.BUILD_SUCCESS;
     }

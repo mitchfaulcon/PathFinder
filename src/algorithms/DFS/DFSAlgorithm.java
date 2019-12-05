@@ -1,16 +1,15 @@
 package algorithms.DFS;
 
 import algorithms.common.Algorithm;
-import algorithms.common.Map.RET_CODE;
 import controller.Tile;
 
 public class DFSAlgorithm extends Algorithm {
 
-    public DFSAlgorithm(int[][] map, int[] start, int[] end){
-        super(map, start, end);
+    public DFSAlgorithm(int[][] map, int[] start, int[] end, Tile[][] tileMap){
+        super(map, start, end, tileMap);
     }
 
-    public void startAlgorithm(Tile[][] tileMap) {
+    public void startAlgorithm() {
         System.out.println("Running DFS algorithm");
     }
 }

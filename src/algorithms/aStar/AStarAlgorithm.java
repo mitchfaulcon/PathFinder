@@ -1,7 +1,6 @@
 package algorithms.aStar;
 
 import algorithms.common.Algorithm;
-import algorithms.common.Map.RET_CODE;
 import algorithms.common.Node;
 import controller.Tile;
 
@@ -9,12 +8,11 @@ import java.util.ArrayList;
 
 public class AStarAlgorithm extends Algorithm {
 
-    public AStarAlgorithm(int[][] map, int[] start, int[] end){
-        super(map, start, end);
+    public AStarAlgorithm(int[][] map, int[] start, int[] end, Tile[][] tileMap){
+        super(map, start, end, tileMap);
     }
 
-    public void startAlgorithm(Tile[][] tileMap){
-        this.tileMap = tileMap;
+    public void startAlgorithm(){
 
         ArrayList<AStarNode> openList = new ArrayList<>();
         ArrayList<AStarNode> closedList = new ArrayList<>();

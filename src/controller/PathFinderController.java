@@ -267,7 +267,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 //Add this class as listener for algorithm
                 algorithm.addListener(this);
                 //Perform algorithm
-                algorithm.startAlgorithm(tileGrid);
+                algorithm.startAlgorithm();
                 break;
         }
     }

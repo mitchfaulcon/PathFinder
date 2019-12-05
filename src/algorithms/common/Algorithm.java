@@ -1,6 +1,5 @@
 package algorithms.common;
 
-import algorithms.common.Map.RET_CODE;
 import controller.PathFinderController;
 import controller.Tile;
 import javafx.application.Platform;
@@ -18,14 +17,15 @@ public abstract class Algorithm {
     private boolean isRunning;
     protected static final int[][] NEIGHBOUR_POSITIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};    //Up, Down, Left, Right
 
-    protected Algorithm(int[][] map, int[] start, int[] end) {
+    protected Algorithm(int[][] map, int[] start, int[] end, Tile[][] tileMap) {
         this.map = map;
         this.start = start;
         this.end = end;
+        this.tileMap = tileMap;
         isRunning = true;
     }
 
-    public abstract void startAlgorithm(Tile[][] tileMap);
+    public abstract void startAlgorithm();
 
     public void addListener(AlgorithmListener listener) {
         listeners.add(listener);
