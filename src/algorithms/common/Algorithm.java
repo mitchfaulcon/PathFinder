@@ -31,9 +31,9 @@ public abstract class Algorithm {
         listeners.add(listener);
     }
 
-    private void algorithmCompleted(RET_CODE retVal) {
+    private void algorithmCompleted() {
         for (AlgorithmListener listener : listeners) {
-            listener.algorithmCompleted(retVal);
+            listener.algorithmCompleted();
         }
     }
 
@@ -68,12 +68,9 @@ public abstract class Algorithm {
                         });
                         Thread.sleep(pathDelay);
                     }
-                    //Notify listeners of successful completion
-                    algorithmCompleted(RET_CODE.PATH_FOUND);
-                } else {
-                    //Notify listeners of unsuccessful completion
-                    algorithmCompleted(RET_CODE.NO_PATH);
                 }
+                //Notify listeners of completion
+                algorithmCompleted();
             }
             catch (InterruptedException ignored) {
 

@@ -16,7 +16,7 @@ public class Map {
 
     private Map () {}
 
-    public enum RET_CODE {PATH_FOUND, NO_PATH, NO_START, NO_END, BUILD_SUCCESS}
+    public enum RET_CODE {NO_START, NO_END, BUILD_SUCCESS}
 
     //2D array to store data about map to perform path-finding algorithm on.
     // 0 - possible path

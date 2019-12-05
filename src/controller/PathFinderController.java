@@ -256,11 +256,11 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         switch (ret){
             case NO_START:
                 showError("There is no start tile on the grid");
-                algorithmCompleted(RET_CODE.BUILD_SUCCESS);     //Need to re-enable buttons
+                algorithmCompleted();     //Need to re-enable buttons
                 break;
             case NO_END:
                 showError("There is no goal tile on the grid");
-                algorithmCompleted(RET_CODE.BUILD_SUCCESS);     //Need to re-enable buttons
+                algorithmCompleted();     //Need to re-enable buttons
                 break;
             case BUILD_SUCCESS:
                 algorithm = map.getAlgorithm();
@@ -272,15 +272,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         }
     }
 
-    public void algorithmCompleted(RET_CODE retVal){
-        switch (retVal) {
-            case NO_PATH:
-                showError("No path could be found");
-                break;
-            case PATH_FOUND:
-                System.out.println("Path found");
-                break;
-        }
+    public void algorithmCompleted(){
 
         //Re-enable buttons when algorithm completed
         rowSpinner.setDisable(false);
@@ -320,7 +312,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     private void onStopButton() {
         //Stop visualisation
         algorithm.stopRunning();
-        algorithmCompleted(RET_CODE.PATH_FOUND);
+        algorithmCompleted();
     }
 
     private FileChooser createFileChooser() {
