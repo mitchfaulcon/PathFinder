@@ -38,6 +38,20 @@ public abstract class Algorithm {
     }
 
     /**
+     * Method to build the complete path in order starting from the first node to the end node
+     */
+    protected ArrayList<Node> buildPath(Node endNode) {
+        Node pathNode = endNode;
+        ArrayList<Node> path = new ArrayList<>();
+        while (pathNode != null) {
+            //Need to add path nodes in reverse order
+            path.add(0, pathNode);
+            pathNode = pathNode.parent;
+        }
+        return path;
+    }
+
+    /**
      * Returns a good delay based on the number of input nodes
      */
     private int getDelay(int numNodes) {

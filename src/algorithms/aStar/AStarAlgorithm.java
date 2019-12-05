@@ -34,15 +34,8 @@ public class AStarAlgorithm extends Algorithm {
 
             //End was found
             if (currentNode.getRow() == end[0] && currentNode.getCol() == end[1]) {
-                Node pathNode = currentNode;
-                ArrayList<Node> path = new ArrayList<>();
-                while (pathNode != null) {
-                    //Add path nodes in reverse order
-                    path.add(0, pathNode);
-                    pathNode = pathNode.getParent();
-                }
                 //Display searched/path tiles
-                visualise(closedList, path);
+                visualise(closedList, buildPath(currentNode));
                 return;
             }
 

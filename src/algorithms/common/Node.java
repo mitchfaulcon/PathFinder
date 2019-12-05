@@ -6,7 +6,7 @@ package algorithms.common;
 public class Node {
 
     private int row, col;
-    protected Node parent;
+    public Node parent;
 
     public Node (int row, int col, Node parent) {
         this.row = row;
@@ -20,9 +20,5 @@ public class Node {
 
     public int getCol() {
         return col;
-    }
-
-    public Node getParent() {
-        return parent;
     }
 }
