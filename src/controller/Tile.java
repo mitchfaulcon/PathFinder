@@ -24,7 +24,7 @@ public class Tile extends Pane {
     /**
      * Sets the cell colour depending on the currently selected drawing mode
      */
-    public void UpdateTileStyle(TileStyle drawingMode, int weightedTileValue) {
+    public void updateTileStyle(TileStyle drawingMode, int weightedTileValue) {
 
         //Don't update tile to searched/path found if it is a wall, start, or finish tile
         if ((drawingMode == TileStyle.SEARCHED || drawingMode == TileStyle.PATH) &&
@@ -80,19 +80,19 @@ public class Tile extends Pane {
         tileStyle = drawingMode;
     }
 
-    public void UpdateTileStyle(TileStyle drawingMode) {
-        UpdateTileStyle(drawingMode, 1);
+    public void updateTileStyle(TileStyle drawingMode) {
+        updateTileStyle(drawingMode, 1);
     }
 
-    public TileStyle GetTileStyle() {
+    public TileStyle getTileStyle() {
         return tileStyle;
     }
 
-    public int GetWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public boolean HasBeenSearched() {
+    public boolean hasBeenSearched() {
         return isSearched;
     }
 }

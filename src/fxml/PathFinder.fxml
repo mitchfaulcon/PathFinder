@@ -98,7 +98,7 @@
                         <Font size="24.0" />
                      </font>
                   </Text>
-                  <JFXToggleNode fx:id="startToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: dodgerblue; -fx-border-color: black;" text="Start" textAlignment="CENTER" textFill="WHITE" translateX="-70.0" translateY="-45.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="startToggle" layoutX="133.0" layoutY="300.0" onAction="#onDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: dodgerblue; -fx-border-color: black;" text="Start" textAlignment="CENTER" textFill="WHITE" translateX="-70.0" translateY="-45.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -106,17 +106,17 @@
                         <ToggleGroup fx:id="DRAWMODE" />
                      </toggleGroup>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="finishToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: rgb(255,36,67); -fx-border-color: black;" text="Goal" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="70.0" translateY="-45.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="finishToggle" layoutX="133.0" layoutY="300.0" onAction="#onDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: rgb(255,36,67); -fx-border-color: black;" text="Goal" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="70.0" translateY="-45.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="wallToggle" layoutX="133.0" layoutY="300.0" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: grey; -jfx-toggle-color: rgb(100,100,100); -fx-border-color: black;" text="Wall" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="wallToggle" layoutX="133.0" layoutY="300.0" onAction="#onDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: grey; -jfx-toggle-color: rgb(100,100,100); -fx-border-color: black;" text="Wall" textAlignment="CENTER" textFill="WHITE" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXToggleNode fx:id="eraserToggle" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Erase" textAlignment="CENTER" toggleGroup="$DRAWMODE" translateX="70.0" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="eraserToggle" onAction="#onDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Erase" textAlignment="CENTER" toggleGroup="$DRAWMODE" translateX="70.0" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -140,12 +140,12 @@
                         </LinearGradient>
                      </stroke>
                   </Line>
-                  <JFXButton fx:id="saveButton" onAction="#OnSave" prefHeight="42.0" prefWidth="120.0" style="-fx-border-color: black; -fx-background-color: rgb(220,220,220);" text="Save Graph" translateX="-75.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                  <JFXButton fx:id="saveButton" onAction="#onSave" prefHeight="42.0" prefWidth="120.0" style="-fx-border-color: black; -fx-background-color: rgb(220,220,220);" text="Save Graph" translateX="-75.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="loadButton" onAction="#OnLoad" prefHeight="42.0" prefWidth="122.0" style="-fx-border-color: black; -fx-background-color: rgb(220,220,220);" text="Load Graph" translateX="75.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                  <JFXButton fx:id="loadButton" onAction="#onLoad" prefHeight="42.0" prefWidth="122.0" style="-fx-border-color: black; -fx-background-color: rgb(220,220,220);" text="Load Graph" translateX="75.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -168,18 +168,18 @@
                         <Font size="24.0" />
                      </font>
                   </Text>
-                  <JFXComboBox fx:id="algorithmComboBox" onAction="#OnAlgorithmSelect" prefHeight="42.0" prefWidth="262.0" promptText="Select" style="-fx-border-color: lightgrey; -fx-font-size: 15;" translateY="-20.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-                  <JFXButton fx:id="goButton" onAction="#OnGoButton" prefHeight="46.0" prefWidth="142.0" style="-fx-background-color: limegreen;" text="GO" translateX="-80.0" translateY="50.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                  <JFXComboBox fx:id="algorithmComboBox" onAction="#onAlgorithmSelect" prefHeight="42.0" prefWidth="262.0" promptText="Select" style="-fx-border-color: lightgrey; -fx-font-size: 15;" translateY="-20.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <JFXButton fx:id="goButton" onAction="#onGoButton" prefHeight="46.0" prefWidth="142.0" style="-fx-background-color: limegreen;" text="GO" translateX="-80.0" translateY="50.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </JFXButton>
-                  <JFXToggleNode fx:id="weightedToggle" onAction="#OnDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Weighted Tile" textAlignment="CENTER" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="65.0" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                  <JFXToggleNode fx:id="weightedToggle" onAction="#onDrawToggle" prefHeight="44.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: black;" text="Weighted Tile" textAlignment="CENTER" toggleGroup="$DRAWMODE" translateX="-70.0" translateY="65.0" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </JFXToggleNode>
-                  <JFXButton fx:id="stopButton" layoutX="109.0" layoutY="616.0" onAction="#OnStopButton" prefHeight="46.0" prefWidth="142.0" style="-fx-background-color: rgb(255,36,67);" text="STOP" translateX="80.0" translateY="50.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                  <JFXButton fx:id="stopButton" layoutX="109.0" layoutY="616.0" onAction="#onStopButton" prefHeight="46.0" prefWidth="142.0" style="-fx-background-color: rgb(255,36,67);" text="STOP" translateX="80.0" translateY="50.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                      <font>
                         <Font name="System Bold" size="20.0" />
                      </font>

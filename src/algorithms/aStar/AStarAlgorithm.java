@@ -3,29 +3,29 @@ package algorithms.aStar;
 import algorithms.common.Algorithm;
 import algorithms.common.Map.RET_CODE;
 import algorithms.common.Node;
-import controller.PathFinderController;
 import controller.Tile;
 
 import java.util.ArrayList;
 
-public class aStarAlgorithm extends Algorithm {
+public class AStarAlgorithm extends Algorithm {
 
-    public aStarAlgorithm(int[][] map, int[] start, int[] end){
+    public AStarAlgorithm(int[][] map, int[] start, int[] end){
         super(map, start, end);
     }
 
-    public RET_CODE StartAlgorithm(Tile[][] tileMap){
+    public RET_CODE startAlgorithm(Tile[][] tileMap){
+        this.tileMap = tileMap;
 
-        ArrayList<aStarNode> openList = new ArrayList<>();
-        ArrayList<aStarNode> closedList = new ArrayList<>();
+        ArrayList<AStarNode> openList = new ArrayList<>();
+        ArrayList<AStarNode> closedList = new ArrayList<>();
 
-        openList.add(new aStarNode(start[0], start[1], null));
+        openList.add(new AStarNode(start[0], start[1], null));
 
         while (!openList.isEmpty()) {
 
             //Get node with smallest cost
-            aStarNode currentNode = openList.get(0);
-            for (aStarNode node : openList) {
+            AStarNode currentNode = openList.get(0);
+            for (AStarNode node : openList) {
                 if (node.f < currentNode.f) {
                     currentNode = node;
                 }
@@ -33,32 +33,26 @@ public class aStarAlgorithm extends Algorithm {
 
             //Remove current node from open list, add to closed list
             openList.remove(currentNode);
-            //Update tile colour to searched, wait for delay to show next one
-            tileMap[currentNode.GetRow()][currentNode.GetCol()].UpdateTileStyle(PathFinderController.TileStyle.SEARCHED);
-            //TODO WaitForDelay();
 
             //End was found
-            if (currentNode.GetRow() == end[0] && currentNode.GetCol() == end[1]) {
+            if (currentNode.getRow() == end[0] && currentNode.getCol() == end[1]) {
                 Node pathNode = currentNode;
                 ArrayList<Node> path = new ArrayList<>();
                 while (pathNode != null) {
                     //Add path nodes in reverse order
                     path.add(0, pathNode);
-                    pathNode = pathNode.GetParent();
+                    pathNode = pathNode.getParent();
                 }
-                //Display final path
-                for (Node node : path) {
-                    tileMap[node.GetRow()][node.GetCol()].UpdateTileStyle(PathFinderController.TileStyle.PATH);
-                    //TODO WaitForDelay();
-                }
+                //Display searched/path tiles
+                visualise(closedList, path);
                 return RET_CODE.SUCCESS;
             }
 
             //Generate children nodes
-            ArrayList<aStarNode> children = new ArrayList<>();
+            ArrayList<AStarNode> children = new ArrayList<>();
             for (int[] newPosition : NEIGHBOUR_POSITIONS){
                 //Get node position
-                int[] nodePosition = {currentNode.GetRow() + newPosition[0], currentNode.GetCol() + newPosition[1]};
+                int[] nodePosition = {currentNode.getRow() + newPosition[0], currentNode.getCol() + newPosition[1]};
 
                 //Make sure node position is within bounds
                 if (nodePosition[0] > map.length - 1 || nodePosition[0] < 0 || nodePosition[1] > map[0].length - 1 || nodePosition[1] < 0) {
@@ -69,24 +63,24 @@ public class aStarAlgorithm extends Algorithm {
                 if (map[nodePosition[0]][nodePosition[1]] == -1) continue;
 
                 //Add new node to children
-                children.add(new aStarNode(nodePosition[0], nodePosition[1], currentNode));
+                children.add(new AStarNode(nodePosition[0], nodePosition[1], currentNode));
             }
 
             //Loop through found children
-            childLoop: for (aStarNode child : children) {
+            childLoop: for (AStarNode child : children) {
 
                 //Check if child is in closed list
-                for (aStarNode closedNode : closedList) {
-                    if (child.GetRow() == closedNode.GetRow() && child.GetCol() == closedNode.GetCol()) continue childLoop;
+                for (AStarNode closedNode : closedList) {
+                    if (child.getRow() == closedNode.getRow() && child.getCol() == closedNode.getCol()) continue childLoop;
                 }
 
                 //Create f,g,h values
-                child.g = currentNode.g + map[child.GetRow()][child.GetCol()];
-                child.h = (int) Math.sqrt((Math.pow(child.GetRow() - end[0], 2) + Math.pow(child.GetCol() - end[1], 2)));
+                child.g = currentNode.g + map[child.getRow()][child.getCol()];
+                child.h = (int) Math.sqrt((Math.pow(child.getRow() - end[0], 2) + Math.pow(child.getCol() - end[1], 2)));
                 child.f = child.g + child.h;
 
-                for (aStarNode openNode : openList) {
-                    if (child.GetRow() == openNode.GetRow() && child.GetCol() == openNode.GetCol()) {
+                for (AStarNode openNode : openList) {
+                    if (child.getRow() == openNode.getRow() && child.getCol() == openNode.getCol()) {
                         //Skip this child if it has already been added with a lower total cost
                         if (openNode.f < child.f) continue childLoop;
                         else {
@@ -106,6 +100,9 @@ public class aStarAlgorithm extends Algorithm {
         }
 
         //If while loop ends, no path was found
+
+        //Only display searched nodes
+        visualise(closedList, null);
         return RET_CODE.NO_PATH;
     }
 }

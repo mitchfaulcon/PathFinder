@@ -14,15 +14,15 @@ public class Node {
         this.parent = parent;
     }
 
-    public int GetRow() {
+    public int getRow() {
         return row;
     }
 
-    public int GetCol() {
+    public int getCol() {
         return col;
     }
 
-    public Node GetParent() {
+    public Node getParent() {
         return parent;
     }
 }

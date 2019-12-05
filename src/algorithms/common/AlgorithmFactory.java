@@ -2,7 +2,7 @@ package algorithms.common;
 
 import algorithms.BFS.BFSAlgorithm;
 import algorithms.DFS.DFSAlgorithm;
-import algorithms.aStar.aStarAlgorithm;
+import algorithms.aStar.AStarAlgorithm;
 import algorithms.dijkstra.DijkstraAlgorithm;
 import algorithms.greedy.GreedyAlgorithm;
 
@@ -13,10 +13,10 @@ public class AlgorithmFactory {
 
     public enum AlgorithmType {ASTAR, BFS, DFS, DIJKSTRA, GREEDY}
 
-    public Algorithm GenerateAlgorithm(AlgorithmType algorithm, int[][] map, int[] start, int[] end) {
+    public Algorithm generateAlgorithm(AlgorithmType algorithm, int[][] map, int[] start, int[] end) {
         switch (algorithm){
             case ASTAR:
-                return new aStarAlgorithm(map, start, end);
+                return new AStarAlgorithm(map, start, end);
             case BFS:
                 return new BFSAlgorithm(map, start, end);
             case DFS:

@@ -10,7 +10,7 @@ import algorithms.common.AlgorithmFactory.AlgorithmType;
 public class Map {
     private static Map instance = new Map();    //Singleton
 
-    public static Map GetInstance() {
+    public static Map getInstance() {
         return instance;
     }
 
@@ -26,7 +26,7 @@ public class Map {
     private int[] start;
     private int[] end;
 
-    public RET_CODE RunAlgorithm(Tile[][] tileMap, AlgorithmType algorithmToRun) {
+    public RET_CODE runAlgorithm(Tile[][] tileMap, AlgorithmType algorithmToRun) {
         int rows = tileMap.length;
         int cols = tileMap[0].length;
 
@@ -38,14 +38,14 @@ public class Map {
         boolean endFound = false;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                TileStyle tileStyle = tileMap[row][col].GetTileStyle();
+                TileStyle tileStyle = tileMap[row][col].getTileStyle();
 
                 switch (tileStyle){
                     case SEARCHED:  //Fall through
                     case PATH:      //Fall through
                     case NONE:      //Fall through
                     case WEIGHTED:
-                        grid[row][col] = tileMap[row][col].GetWeight();
+                        grid[row][col] = tileMap[row][col].getWeight();
                         break;
                     case WALL:
                         grid[row][col] = -1;
@@ -66,18 +66,18 @@ public class Map {
         if (!startFound) return RET_CODE.NO_START;
         if (!endFound) return RET_CODE.NO_END;
 
-        //DisplayMap();
+        //displayMap();
 
         //Generate correct algorithm from factory
-        Algorithm algorithm = new AlgorithmFactory().GenerateAlgorithm(algorithmToRun, grid, start, end);
+        Algorithm algorithm = new AlgorithmFactory().generateAlgorithm(algorithmToRun, grid, start, end);
         //Perform algorithm, return NO_PATH if path couldn't be found
-        return algorithm.StartAlgorithm(tileMap);
+        return algorithm.startAlgorithm(tileMap);
     }
 
     /**
      * Helper function to display representation of map in terminal output
      */
-    private void DisplayMap(){
+    private void displayMap(){
         for (int[] row : grid) {
             for (int cell : row) {
                 System.out.print(cell + "  ");

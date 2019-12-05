@@ -61,8 +61,8 @@ public class PathFinderController implements Initializable {
         //Setup grid size spinners
         rowSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINROWS, MAXROWS));
         colSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINCOLUMNS, MAXCOLUMNS));
-        rowSpinner.valueProperty().addListener((observer, oldValue, newValue)->UpdateGrid());
-        colSpinner.valueProperty().addListener((observer, oldValue, newValue)->UpdateGrid());
+        rowSpinner.valueProperty().addListener((observer, oldValue, newValue)-> updateGrid());
+        colSpinner.valueProperty().addListener((observer, oldValue, newValue)-> updateGrid());
         rowSpinner.getValueFactory().setValue(10);
         colSpinner.getValueFactory().setValue(10);
 
@@ -91,7 +91,7 @@ public class PathFinderController implements Initializable {
         stopButton.setDisable(true);    //Disable Stop button until algorithm is running
     }
 
-    private void UpdateGrid() {
+    private void updateGrid() {
 
         //Delete all old cells
         graphGrid.getChildren().clear();
@@ -126,12 +126,12 @@ public class PathFinderController implements Initializable {
             }
         }
 
-        AddCellListeners();
+        addCellListeners();
 
-        saveButton.setDisable(IsGridEmpty());
+        saveButton.setDisable(isGridEmpty());
     }
 
-    private void AddCellListeners(){
+    private void addCellListeners(){
         for (Node node : graphGrid.getChildren()){
             if (node instanceof Tile){      //Just to be safe
 
@@ -139,49 +139,49 @@ public class PathFinderController implements Initializable {
                 node.setOnDragDetected(e -> node.startFullDrag());
 
                 //Detect when mouse is clicked and dragged over
-                node.setOnMouseDragEntered(e -> UpdateTile((Tile) node));
+                node.setOnMouseDragEntered(e -> updateTile((Tile) node));
 
                 //Also need to detect single clicks
-                node.setOnMousePressed(e -> UpdateTile((Tile) node));
+                node.setOnMousePressed(e -> updateTile((Tile) node));
             }
         }
     }
 
-    private void UpdateTile(Tile tile){
+    private void updateTile(Tile tile){
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
                 //Remove previous searched/path tiles
-                if (t.HasBeenSearched()) {
-                    t.UpdateTileStyle(TileStyle.NONE);
+                if (t.hasBeenSearched()) {
+                    t.updateTileStyle(TileStyle.NONE);
                 }
 
                 //If drawing start or finish point, delete previous start or finish points
-                if (t.GetTileStyle() == TileStyle.START && drawingMode == TileStyle.START) {
-                    t.UpdateTileStyle(TileStyle.NONE);
+                if (t.getTileStyle() == TileStyle.START && drawingMode == TileStyle.START) {
+                    t.updateTileStyle(TileStyle.NONE);
                 }
-                if (t.GetTileStyle() == TileStyle.FINISH && drawingMode == TileStyle.FINISH) {
-                    t.UpdateTileStyle(TileStyle.NONE);
+                if (t.getTileStyle() == TileStyle.FINISH && drawingMode == TileStyle.FINISH) {
+                    t.updateTileStyle(TileStyle.NONE);
                 }
             }
         }
 
         if (drawingMode == TileStyle.WEIGHTED) {
-            tile.UpdateTileStyle(TileStyle.WEIGHTED, weightedTileValue);
+            tile.updateTileStyle(TileStyle.WEIGHTED, weightedTileValue);
         } else {
-            tile.UpdateTileStyle(drawingMode);
+            tile.updateTileStyle(drawingMode);
         }
 
-        saveButton.setDisable(IsGridEmpty());
+        saveButton.setDisable(isGridEmpty());
     }
 
     /**
      * @return True if each tile on the grid is empty
      *         False if there is at least one of a wall, start, or finish tile
      */
-    private boolean IsGridEmpty(){
+    private boolean isGridEmpty(){
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
-                TileStyle tileStyle = t.GetTileStyle();
+                TileStyle tileStyle = t.getTileStyle();
                 if (tileStyle == TileStyle.WALL || tileStyle == TileStyle.START || tileStyle == TileStyle.FINISH || tileStyle == TileStyle.WEIGHTED) return false;
             }
         }
@@ -189,7 +189,7 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void OnDrawToggle(ActionEvent actionEvent) {
+    private void onDrawToggle(ActionEvent actionEvent) {
         if (actionEvent.getSource() instanceof JFXToggleNode){
             tileWeightSpinner.setDisable(true);
             if (actionEvent.getSource().equals(eraserToggle)){
@@ -223,7 +223,7 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void OnGoButton() {
+    private void onGoButton() {
         //Disable all buttons while algorithm is running
         rowSpinner.setDisable(true);
         colSpinner.setDisable(true);
@@ -241,22 +241,22 @@ public class PathFinderController implements Initializable {
         //Remove previous searched/path tiles
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
-                if (t.HasBeenSearched()) {
-                    t.UpdateTileStyle(TileStyle.NONE);
+                if (t.hasBeenSearched()) {
+                    t.updateTileStyle(TileStyle.NONE);
                 }
             }
         }
 
-        RET_CODE ret = Map.GetInstance().RunAlgorithm(tileGrid, currentAlgorithm);
+        RET_CODE ret = Map.getInstance().runAlgorithm(tileGrid, currentAlgorithm);
         switch (ret){
             case NO_PATH:
-                ShowError("No path could be found");
+                showError("No path could be found");
                 break;
             case NO_START:
-                ShowError("There is no start tile on the grid");
+                showError("There is no start tile on the grid");
                 break;
             case NO_END:
-                ShowError("There is no goal tile on the grid");
+                showError("There is no goal tile on the grid");
                 break;
             case SUCCESS:
                 System.out.println("Path found");
@@ -299,11 +299,11 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void OnStopButton() {
+    private void onStopButton() {
         //TODO Stop visualisation
     }
 
-    private FileChooser CreateFileChooser() {
+    private FileChooser createFileChooser() {
         FileChooser fileChooser = new FileChooser();
 
         //Start the FileChooser in the current directory rather than the root
@@ -318,16 +318,16 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void OnSave() {
+    private void onSave() {
         //Show save dialog
-        File file = CreateFileChooser().showSaveDialog(saveButton.getScene().getWindow());
+        File file = createFileChooser().showSaveDialog(saveButton.getScene().getWindow());
 
         if (file != null) {
-            SaveToFile(file);
+            saveToFile(file);
         }
     }
 
-    private void SaveToFile(File file) {
+    private void saveToFile(File file) {
         try {
             PrintWriter writer;
             writer = new PrintWriter(file);
@@ -335,7 +335,7 @@ public class PathFinderController implements Initializable {
             for (int row = 0; row < tileGrid.length; row++) {
                 StringBuilder sb = new StringBuilder();
                 for (int col = 0; col < tileGrid[0].length; col++) {
-                    TileStyle tileStyle = tileGrid[row][col].GetTileStyle();
+                    TileStyle tileStyle = tileGrid[row][col].getTileStyle();
                     switch (tileStyle) {
                         case SEARCHED:  //Fall through
                         case PATH:      //Fall through
@@ -364,16 +364,16 @@ public class PathFinderController implements Initializable {
     }
 
     @FXML
-    private void OnLoad() {
+    private void onLoad() {
         //Show load dialog
-        File file = CreateFileChooser().showOpenDialog(saveButton.getScene().getWindow());
+        File file = createFileChooser().showOpenDialog(saveButton.getScene().getWindow());
 
         if (file != null) {
-            LoadFile(file);
+            loadFile(file);
         }
     }
 
-    private void LoadFile(File file) {
+    private void loadFile(File file) {
         try {
             FileReader fileReader = new FileReader(file);
 
@@ -387,13 +387,13 @@ public class PathFinderController implements Initializable {
 
                 //Ensure line only contains legal characters
                 if (!line.matches("[0wsf]*")){
-                    ShowError("File contains illegal character (line " + rows + ")");
+                    showError("File contains illegal character (line " + rows + ")");
                     return;
                 }
 
                 //Ensure number of columns is the same in every row
                 if (cols != -1 && line.length() != cols){
-                    ShowError("Number of columns is not consistent throughout file");
+                    showError("Number of columns is not consistent throughout file");
                     return;
                 } else {
                     cols = line.length();
@@ -403,20 +403,20 @@ public class PathFinderController implements Initializable {
             }
             //Ensure number of rows are within allowed range
             if (rows > MAXROWS){
-                ShowError("Number of rows is too large");
+                showError("Number of rows is too large");
                 return;
             }
             if (rows < MINROWS){
-                ShowError("Number of rows is too small");
+                showError("Number of rows is too small");
                 return;
             }
             //Ensure number of columns are within allowed range
             if (cols > MAXCOLUMNS){
-                ShowError("Number of columns is too large");
+                showError("Number of columns is too large");
                 return;
             }
             if (cols < MINCOLUMNS){
-                ShowError("Number of columns is too small");
+                showError("Number of columns is too small");
                 return;
             }
 
@@ -434,16 +434,16 @@ public class PathFinderController implements Initializable {
                 for (char c : line.toCharArray()) {
                     switch (c) {
                         case '0':
-                            tileGrid[row][col].UpdateTileStyle(TileStyle.NONE);
+                            tileGrid[row][col].updateTileStyle(TileStyle.NONE);
                             break;
                         case 'w':
-                            tileGrid[row][col].UpdateTileStyle(TileStyle.WALL);
+                            tileGrid[row][col].updateTileStyle(TileStyle.WALL);
                             break;
                         case 's':
-                            tileGrid[row][col].UpdateTileStyle(TileStyle.START);
+                            tileGrid[row][col].updateTileStyle(TileStyle.START);
                             break;
                         case 'f':
-                            tileGrid[row][col].UpdateTileStyle(TileStyle.FINISH);
+                            tileGrid[row][col].updateTileStyle(TileStyle.FINISH);
                             break;
                     }
                     col++;
@@ -453,7 +453,7 @@ public class PathFinderController implements Initializable {
                 line = reader.readLine();
             }
 
-            saveButton.setDisable(IsGridEmpty());
+            saveButton.setDisable(isGridEmpty());
 
             reader.close();
         } catch (IOException ex) {
@@ -461,13 +461,13 @@ public class PathFinderController implements Initializable {
         }
     }
 
-    private void ShowError(String message) {
+    private void showError(String message) {
         Alert alert = new Alert(AlertType.ERROR, message);
         alert.showAndWait();
     }
 
     @FXML
-    private void OnAlgorithmSelect() {
+    private void onAlgorithmSelect() {
         String selected = algorithmComboBox.getSelectionModel().getSelectedItem();
         switch (selected) {
             case "A*":
