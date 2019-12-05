@@ -57,6 +57,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     private Tile[][] tileGrid;               //Stores all tiles
 
     private AlgorithmType currentAlgorithm;
+    private Algorithm algorithm;            //Algorithm that will run
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -262,7 +263,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 algorithmCompleted(RET_CODE.BUILD_SUCCESS);     //Need to re-enable buttons
                 break;
             case BUILD_SUCCESS:
-                Algorithm algorithm = map.getAlgorithm();
+                algorithm = map.getAlgorithm();
                 //Add this class as listener for algorithm
                 algorithm.addListener(this);
                 //Perform algorithm
@@ -317,7 +318,9 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
     @FXML
     private void onStopButton() {
-        //TODO Stop visualisation
+        //Stop visualisation
+        algorithm.stopRunning();
+        algorithmCompleted(RET_CODE.PATH_FOUND);
     }
 
     private FileChooser createFileChooser() {

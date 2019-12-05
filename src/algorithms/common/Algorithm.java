@@ -15,12 +15,14 @@ public abstract class Algorithm {
     protected int[][] map;
     protected int[] start;
     protected int[] end;
+    private boolean isRunning;
     protected static final int[][] NEIGHBOUR_POSITIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};    //Up, Down, Left, Right
 
     protected Algorithm(int[][] map, int[] start, int[] end) {
         this.map = map;
         this.start = start;
         this.end = end;
+        isRunning = true;
     }
 
     public abstract void startAlgorithm(Tile[][] tileMap);
@@ -49,6 +51,7 @@ public abstract class Algorithm {
                 //Update searched tile colours, wait for delay to show next one
                 int searchDelay = getDelay(searchedNodes.size());
                 for (Node node : searchedNodes) {
+                    if (!isRunning) return;     //Stop visualisation
                     Platform.runLater(() -> {
                         tileMap[node.getRow()][node.getCol()].updateTileStyle(PathFinderController.TileStyle.SEARCHED);
                     });
@@ -59,6 +62,7 @@ public abstract class Algorithm {
                 if (path != null) {
                     int pathDelay = getDelay(path.size());
                     for (Node node : path) {
+                        if (!isRunning) return;     //Stop visualisation
                         Platform.runLater(() -> {
                             tileMap[node.getRow()][node.getCol()].updateTileStyle(PathFinderController.TileStyle.PATH);
                         });
@@ -76,5 +80,9 @@ public abstract class Algorithm {
             }
         };
         new Thread(task).start();
+    }
+
+    public void stopRunning() {
+        isRunning = false;
     }
 }
