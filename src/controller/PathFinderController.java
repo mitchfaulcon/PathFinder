@@ -413,7 +413,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 for (String entry : rowEntries) {
                     //Ensure line only contains legal entries
                     if (!entry.matches("[wsf0]|([']([2-9]|[1-9][0-9]|100)['])")){       //w s f 0 '<int from 2-100>'
-                        showError("File contains illegal entry (\"" + entry + "\" - line " + rows + ")");
+                        showError("File contains illegal entry (line " + rows + ": \"" + entry + "\")\n");
                         return;
                     }
                 }
