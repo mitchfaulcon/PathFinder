@@ -403,6 +403,8 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             //Get dimensions of loaded map
             int rows = 0;
             int cols = -1;
+            boolean startFound = false;
+            boolean endFound = false;
             BufferedReader reader = new BufferedReader(fileReader);
             String line = reader.readLine();
             while (line != null) {
@@ -415,6 +417,24 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                     if (!entry.matches("[wsf0]|([']([2-9]|[1-9][0-9]|100)['])")){       //w s f 0 '<int from 2-100>'
                         showError("File contains illegal entry (line " + rows + ": \"" + entry + "\")\n");
                         return;
+                    }
+                    //Check for more than one start tile
+                    if (entry.matches("s")) {
+                        if (startFound){
+                            showError("Cannot have more than one start tile");
+                            return;
+                        } else {
+                            startFound = true;
+                        }
+                    }
+                    //Check for more than one end tile
+                    if (entry.matches("f")) {
+                        if (endFound){
+                            showError("Cannot have more than one end tile");
+                            return;
+                        } else {
+                            endFound = true;
+                        }
                     }
                 }
 
