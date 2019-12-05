@@ -237,6 +237,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         tileWeightSpinner.setDisable(true);
         saveButton.setDisable(true);
         loadButton.setDisable(true);
+        algorithmComboBox.setDisable(true);
         goButton.setDisable(true);
         stopButton.setDisable(false);   //And enable stop button
 
@@ -283,6 +284,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         weightedToggle.setDisable(false);
         saveButton.setDisable(false);
         loadButton.setDisable(false);
+        algorithmComboBox.setDisable(false);
         goButton.setDisable(false);
         stopButton.setDisable(true);   //And disable stop button
 
