@@ -368,7 +368,13 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                         case FINISH:
                             sb.append("f");
                             break;
+                        case WEIGHTED:
+                            String weightString = "'" + tileGrid[row][col].getWeight() + "'";
+                            sb.append(weightString);
+                            break;
                     }
+                    //Add space if not last column
+                    if (col < tileGrid[0].length - 1) sb.append(" ");
                 }
                 writer.print(sb);
                 if (row < tileGrid.length - 1) writer.print("\n");
@@ -402,18 +408,22 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             while (line != null) {
                 rows++;
 
-                //Ensure line only contains legal characters
-                if (!line.matches("[0wsf]*")){
-                    showError("File contains illegal character (line " + rows + ")");
-                    return;
+                String[] rowEntries = line.split(" ");
+
+                for (String entry : rowEntries) {
+                    //Ensure line only contains legal entries
+                    if (!entry.matches("[wsf0]|([']([2-9]|[1-9][0-9]|100)['])")){       //w s f 0 '<int from 2-100>'
+                        showError("File contains illegal entry (\"" + entry + "\" - line " + rows + ")");
+                        return;
+                    }
                 }
 
                 //Ensure number of columns is the same in every row
-                if (cols != -1 && line.length() != cols){
+                if (cols != -1 && rowEntries.length != cols){
                     showError("Number of columns is not consistent throughout file");
                     return;
                 } else {
-                    cols = line.length();
+                    cols = rowEntries.length;
                 }
 
                 line = reader.readLine();
@@ -448,19 +458,24 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             while (line != null) {
                 int col = 0;
 
-                for (char c : line.toCharArray()) {
-                    switch (c) {
-                        case '0':
+                for (String entry : line.split(" ")) {
+                    switch (entry) {
+                        case "0":
                             tileGrid[row][col].updateTileStyle(TileStyle.NONE);
                             break;
-                        case 'w':
+                        case "w":
                             tileGrid[row][col].updateTileStyle(TileStyle.WALL);
                             break;
-                        case 's':
+                        case "s":
                             tileGrid[row][col].updateTileStyle(TileStyle.START);
                             break;
-                        case 'f':
+                        case "f":
                             tileGrid[row][col].updateTileStyle(TileStyle.FINISH);
+                            break;
+                        default:    //Weighted tile gets here
+                            //Remove single quotes from around number
+                            String weight = entry.replace("'", "");
+                            tileGrid[row][col].updateTileStyle(TileStyle.WEIGHTED, Integer.parseInt(weight));
                             break;
                     }
                     col++;
