@@ -1,6 +1,5 @@
 package algorithms.dijkstra;
 
-import algorithms.aStar.AStarNode;
 import algorithms.common.Algorithm;
 import algorithms.common.Node;
 import controller.Tile;
@@ -15,25 +14,10 @@ public class DijkstraAlgorithm extends Algorithm {
 
     public void startAlgorithm() {
 
-        ArrayList<DijkstraNode> closedList = new ArrayList<>();
-        ArrayList<DijkstraNode> openList = new ArrayList<>();
-//        ArrayList<DijkstraNode> unvisitedList = new ArrayList<>();
+        ArrayList<Node> closedList = new ArrayList<>();
+        ArrayList<Node> openList = new ArrayList<>();
 
-        //Add all nodes to unvisited list with infinite weight
-//        for (int row = 0; row < map.length; row++) {
-//            for (int col = 0; col < map[0].length; col++) {
-//                DijkstraNode node = new DijkstraNode(row, col, null);
-//                if (row == start[0] && col == start[1]) {
-//                    //Set start node weight to 0
-//                    node.weight = 0;
-//                    openList.add(node);
-//                } else {
-//                    unvisitedList.add(node);
-//                }
-//            }
-//        }
-
-        DijkstraNode startNode = new DijkstraNode(start[0], start[1], null);
+        Node startNode = new Node(start[0], start[1], null);
         startNode.weight = 0;
         openList.add(startNode);
 
@@ -41,14 +25,14 @@ public class DijkstraAlgorithm extends Algorithm {
         while (!openList.isEmpty()) {
 
             //Get node with the smallest cost
-            DijkstraNode currentNode = openList.get(0);
-            for (DijkstraNode node : openList) {
+            Node currentNode = openList.get(0);
+            for (Node node : openList) {
                 if (node.weight < currentNode.weight) {
                     currentNode = node;
                 }
             }
 
-            //Remove current node from open list, add to closed list
+            //Remove current node from open list
             openList.remove(currentNode);
 
             //End was found
@@ -59,7 +43,7 @@ public class DijkstraAlgorithm extends Algorithm {
             }
 
             //Generate children nodes
-            ArrayList<DijkstraNode> children = new ArrayList<>();
+            ArrayList<Node> children = new ArrayList<>();
             for (int[] newPosition : NEIGHBOUR_POSITIONS){
                 //Get node position
                 int[] nodePosition = {currentNode.getRow() + newPosition[0], currentNode.getCol() + newPosition[1]};
@@ -73,21 +57,21 @@ public class DijkstraAlgorithm extends Algorithm {
                 if (map[nodePosition[0]][nodePosition[1]] == -1) continue;
 
                 //Add new node to children
-                children.add(new DijkstraNode(nodePosition[0], nodePosition[1], currentNode));
+                children.add(new Node(nodePosition[0], nodePosition[1], currentNode));
             }
 
             //Loop through found children
-            childLoop: for (DijkstraNode child : children) {
+            childLoop: for (Node child : children) {
 
                 //Check if child is in closed list
-                for (DijkstraNode closedNode : closedList) {
+                for (Node closedNode : closedList) {
                     if (child.getRow() == closedNode.getRow() && child.getCol() == closedNode.getCol()) continue childLoop;
                 }
 
                 //Calculate weight of child
                 child.weight = currentNode.weight + map[child.getRow()][child.getCol()];
 
-                for (DijkstraNode openNode : openList) {
+                for (Node openNode : openList) {
                     if (child.getRow() == openNode.getRow() && child.getCol() == openNode.getCol()) {
                         //Skip this child if it has already been added with a lower total cost
                         if (openNode.weight < child.weight) continue childLoop;

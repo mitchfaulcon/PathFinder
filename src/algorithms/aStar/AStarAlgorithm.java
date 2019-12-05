@@ -29,7 +29,7 @@ public class AStarAlgorithm extends Algorithm {
                 }
             }
 
-            //Remove current node from open list, add to closed list
+            //Remove current node from open list
             openList.remove(currentNode);
 
             //End was found
@@ -67,7 +67,7 @@ public class AStarAlgorithm extends Algorithm {
 
                 //Create f,g,h values
                 child.g = currentNode.g + map[child.getRow()][child.getCol()];
-                child.h = (int) Math.sqrt((Math.pow(child.getRow() - end[0], 2) + Math.pow(child.getCol() - end[1], 2)));
+                child.h = (int) Math.sqrt((Math.pow(child.getRow() - end[0], 2) + Math.pow(child.getCol() - end[1], 2)));       //Euclidean distance to end
                 child.f = child.g + child.h;
 
                 for (AStarNode openNode : openList) {

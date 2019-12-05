@@ -7,6 +7,7 @@ public class Node {
 
     private int row, col;
     public Node parent;
+    public int weight;      //Cost to get to this node
 
     public Node (int row, int col, Node parent) {
         this.row = row;

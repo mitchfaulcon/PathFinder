@@ -2,6 +2,9 @@ package algorithms.aStar;
 
 import algorithms.common.Node;
 
+/**
+ * A* needs extra information about each node for the heuristics
+ */
 public class AStarNode extends Node {
 
     protected int f = 0;  //Total cost of node

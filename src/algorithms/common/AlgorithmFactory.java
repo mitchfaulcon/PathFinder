@@ -4,7 +4,6 @@ import algorithms.BFS.BFSAlgorithm;
 import algorithms.DFS.DFSAlgorithm;
 import algorithms.aStar.AStarAlgorithm;
 import algorithms.dijkstra.DijkstraAlgorithm;
-import algorithms.greedy.GreedyAlgorithm;
 import controller.Tile;
 
 /**
@@ -12,7 +11,7 @@ import controller.Tile;
  */
 public class AlgorithmFactory {
 
-    public enum AlgorithmType {ASTAR, BFS, DFS, DIJKSTRA, GREEDY}
+    public enum AlgorithmType {ASTAR, BFS, DFS, DIJKSTRA}
 
     public Algorithm generateAlgorithm(AlgorithmType algorithm, int[][] map, int[] start, int[] end, Tile[][] tileMap) {
         switch (algorithm){
@@ -24,8 +23,6 @@ public class AlgorithmFactory {
                 return new DFSAlgorithm(map, start, end, tileMap);
             case DIJKSTRA:
                 return new DijkstraAlgorithm(map, start, end, tileMap);
-            case GREEDY:
-                return new GreedyAlgorithm(map, start, end, tileMap);
         }
         return null;
     }
