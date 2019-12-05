@@ -16,7 +16,7 @@ public class Map {
 
     private Map () {}
 
-    public enum RET_CODE {SUCCESS, NO_PATH, NO_START, NO_END}
+    public enum RET_CODE {PATH_FOUND, NO_PATH, NO_START, NO_END, BUILD_SUCCESS}
 
     //2D array to store data about map to perform path-finding algorithm on.
     // 0 - possible path
@@ -26,7 +26,9 @@ public class Map {
     private int[] start;
     private int[] end;
 
-    public RET_CODE runAlgorithm(Tile[][] tileMap, AlgorithmType algorithmToRun) {
+    private Algorithm algorithm;
+
+    public RET_CODE buildAlgorithm(Tile[][] tileMap, AlgorithmType algorithmToRun) {
         int rows = tileMap.length;
         int cols = tileMap[0].length;
 
@@ -69,9 +71,13 @@ public class Map {
         //displayMap();
 
         //Generate correct algorithm from factory
-        Algorithm algorithm = new AlgorithmFactory().generateAlgorithm(algorithmToRun, grid, start, end);
-        //Perform algorithm, return NO_PATH if path couldn't be found
-        return algorithm.startAlgorithm(tileMap);
+        algorithm = new AlgorithmFactory().generateAlgorithm(algorithmToRun, grid, start, end);
+
+        return RET_CODE.BUILD_SUCCESS;
+    }
+
+    public Algorithm getAlgorithm() {
+        return algorithm;
     }
 
     /**

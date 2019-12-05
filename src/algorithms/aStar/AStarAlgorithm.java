@@ -13,7 +13,7 @@ public class AStarAlgorithm extends Algorithm {
         super(map, start, end);
     }
 
-    public RET_CODE startAlgorithm(Tile[][] tileMap){
+    public void startAlgorithm(Tile[][] tileMap){
         this.tileMap = tileMap;
 
         ArrayList<AStarNode> openList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class AStarAlgorithm extends Algorithm {
                 }
                 //Display searched/path tiles
                 visualise(closedList, path);
-                return RET_CODE.SUCCESS;
+                return;
             }
 
             //Generate children nodes
@@ -103,6 +103,5 @@ public class AStarAlgorithm extends Algorithm {
 
         //Only display searched nodes
         visualise(closedList, null);
-        return RET_CODE.NO_PATH;
     }
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public abstract class Algorithm {
 
+    protected ArrayList<AlgorithmListener> listeners = new ArrayList<>();
+
     protected Tile[][] tileMap;
     protected int[][] map;
     protected int[] start;
@@ -21,7 +23,17 @@ public abstract class Algorithm {
         this.end = end;
     }
 
-    public abstract RET_CODE startAlgorithm(Tile[][] tileMap);
+    public abstract void startAlgorithm(Tile[][] tileMap);
+
+    public void addListener(AlgorithmListener listener) {
+        listeners.add(listener);
+    }
+
+    private void algorithmCompleted(RET_CODE retVal) {
+        for (AlgorithmListener listener : listeners) {
+            listener.algorithmCompleted(retVal);
+        }
+    }
 
     /**
      * Returns a good delay based on the number of input nodes
@@ -52,6 +64,11 @@ public abstract class Algorithm {
                         });
                         Thread.sleep(pathDelay);
                     }
+                    //Notify listeners of successful completion
+                    algorithmCompleted(RET_CODE.PATH_FOUND);
+                } else {
+                    //Notify listeners of unsuccessful completion
+                    algorithmCompleted(RET_CODE.NO_PATH);
                 }
             }
             catch (InterruptedException ignored) {

@@ -10,8 +10,7 @@ public class DijkstraAlgorithm extends Algorithm {
         super(map, start, end);
     }
 
-    public RET_CODE startAlgorithm(Tile[][] tileMap) {
+    public void startAlgorithm(Tile[][] tileMap) {
         System.out.println("Running Dijkstra algorithm");
-        return RET_CODE.NO_PATH;
     }
 }

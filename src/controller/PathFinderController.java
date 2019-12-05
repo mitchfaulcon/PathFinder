@@ -1,5 +1,7 @@
 package controller;
 
+import algorithms.common.Algorithm;
+import algorithms.common.AlgorithmListener;
 import algorithms.common.Map;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -26,7 +28,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PathFinderController implements Initializable {
+public class PathFinderController implements Initializable, AlgorithmListener {
 
     @FXML Spinner<Integer> rowSpinner;
     @FXML Spinner<Integer> colSpinner;
@@ -247,18 +249,34 @@ public class PathFinderController implements Initializable {
             }
         }
 
-        RET_CODE ret = Map.getInstance().runAlgorithm(tileGrid, currentAlgorithm);
+        Map map = Map.getInstance();
+        RET_CODE ret = map.buildAlgorithm(tileGrid, currentAlgorithm);
+        //Only want to handle errors here, success/no path are handled in listener method
         switch (ret){
-            case NO_PATH:
-                showError("No path could be found");
-                break;
             case NO_START:
                 showError("There is no start tile on the grid");
+                algorithmCompleted(RET_CODE.BUILD_SUCCESS);     //Need to re-enable buttons
                 break;
             case NO_END:
                 showError("There is no goal tile on the grid");
+                algorithmCompleted(RET_CODE.BUILD_SUCCESS);     //Need to re-enable buttons
                 break;
-            case SUCCESS:
+            case BUILD_SUCCESS:
+                Algorithm algorithm = map.getAlgorithm();
+                //Add this class as listener for algorithm
+                algorithm.addListener(this);
+                //Perform algorithm
+                algorithm.startAlgorithm(tileGrid);
+                break;
+        }
+    }
+
+    public void algorithmCompleted(RET_CODE retVal){
+        switch (retVal) {
+            case NO_PATH:
+                showError("No path could be found");
+                break;
+            case PATH_FOUND:
                 System.out.println("Path found");
                 break;
         }
@@ -295,7 +313,6 @@ public class PathFinderController implements Initializable {
                 tileWeightSpinner.setDisable(false);
                 break;
         }
-
     }
 
     @FXML
