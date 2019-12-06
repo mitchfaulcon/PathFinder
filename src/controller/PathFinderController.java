@@ -1,8 +1,10 @@
 package controller;
 
 import algorithms.common.Algorithm;
+import algorithms.common.AlgorithmFactory.AlgorithmType;
 import algorithms.common.AlgorithmListener;
 import algorithms.common.Map;
+import algorithms.common.Map.RET_CODE;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleNode;
@@ -10,16 +12,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import algorithms.common.Map.RET_CODE;
 import javafx.stage.FileChooser;
-import javafx.scene.control.Alert.AlertType;
-import algorithms.common.AlgorithmFactory.AlgorithmType;
+import mapGeneration.MazeGenerator;
 
 import java.io.*;
 import java.net.URL;
@@ -41,6 +40,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     @FXML Spinner<Integer> tileWeightSpinner;
     @FXML JFXButton saveButton;
     @FXML JFXButton loadButton;
+    @FXML MenuButton mapSelectMenu;
     @FXML JFXComboBox<String> algorithmComboBox;
     @FXML JFXButton goButton;
     @FXML JFXButton stopButton;
@@ -94,6 +94,10 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     }
 
     private void updateGrid() {
+
+        //Make sure values do not get set too high
+        if (rowSpinner.getValue() > MAXROWS) rowSpinner.getValueFactory().setValue(MAXROWS);
+        if (colSpinner.getValue() > MAXCOLUMNS) colSpinner.getValueFactory().setValue(MAXCOLUMNS);
 
         //Delete all old cells
         graphGrid.getChildren().clear();
@@ -237,6 +241,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         tileWeightSpinner.setDisable(true);
         saveButton.setDisable(true);
         loadButton.setDisable(true);
+        mapSelectMenu.setDisable(true);
         algorithmComboBox.setDisable(true);
         goButton.setDisable(true);
         stopButton.setDisable(false);   //And enable stop button
@@ -284,6 +289,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         weightedToggle.setDisable(false);
         saveButton.setDisable(false);
         loadButton.setDisable(false);
+        mapSelectMenu.setDisable(false);
         algorithmComboBox.setDisable(false);
         goButton.setDisable(false);
         stopButton.setDisable(true);   //And disable stop button
@@ -532,5 +538,15 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 break;
         }
         goButton.setDisable(false);     //Algorithm has been selected so Go button can be clicked
+    }
+
+    @FXML
+    private void onMapSelect(ActionEvent event) {
+
+        switch (((MenuItem) event.getSource()).getId()) {
+            case "mazeMap":
+                new MazeGenerator(tileGrid).generateMaze();
+                break;
+        }
     }
 }

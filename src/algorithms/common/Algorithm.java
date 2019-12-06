@@ -15,7 +15,7 @@ public abstract class Algorithm {
     protected int[] start;
     protected int[] end;
     private boolean isRunning;
-    protected static final int[][] NEIGHBOUR_POSITIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};    //Up, Down, Left, Right
+    public static final int[][] NEIGHBOUR_POSITIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};    //Up, Down, Left, Right
 
     protected Algorithm(int[][] map, int[] start, int[] end, Tile[][] tileMap) {
         this.map = map;
