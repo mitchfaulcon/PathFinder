@@ -208,6 +208,7 @@
                   <MenuButton fx:id="mapSelectMenu" mnemonicParsing="false" prefHeight="42.0" prefWidth="262.0" style="-fx-background-color: white; -fx-border-color: lightgrey; -fx-font-size: 15;" text="Select Map Style" translateY="10.0" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                      <items>
                         <MenuItem fx:id="mazeMap" mnemonicParsing="false" onAction="#onMapSelect" style="-fx-min-width: 230; -fx-pref-width: 230; -fx-max-width: 230; -fx-min-height: 25; -fx-pref-height: 25; -fx-max-height: 25;" text="Maze" />
+                        <MenuItem fx:id="randomMap" mnemonicParsing="false" onAction="#onMapSelect" style="-fx-min-width: 230; -fx-pref-width: 230; -fx-max-width: 230; -fx-min-height: 25; -fx-pref-height: 25; -fx-max-height: 25;" text="Pure Random" />
                      </items>
                   </MenuButton>
                </children>

@@ -11,4 +11,6 @@ public abstract class MapGenerator {
         this.tileMap = tileMap;
         map = new int[tileMap.length][tileMap[0].length];
     }
+
+    public abstract void generateMap();
 }

@@ -58,7 +58,7 @@ public class MazeGenerator extends MapGenerator {
     /**
      * Method to generate a maze using a customised version of Kruskal's maze generation algorithm
      */
-    public void generateMaze() {
+    public void generateMap() {
         int rows = tileMap.length;
         int cols = tileMap[0].length;
 
