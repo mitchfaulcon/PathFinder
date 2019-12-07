@@ -3,6 +3,7 @@ package algorithms.common;
 import algorithms.BFS.BFSAlgorithm;
 import algorithms.DFS.DFSAlgorithm;
 import algorithms.aStar.AStarAlgorithm;
+import algorithms.biDirectional.BiDirectionalAlgorithm;
 import algorithms.dijkstra.DijkstraAlgorithm;
 import controller.Tile;
 
@@ -11,7 +12,7 @@ import controller.Tile;
  */
 public class AlgorithmFactory {
 
-    public enum AlgorithmType {ASTAR, BFS, DFS, DIJKSTRA}
+    public enum AlgorithmType {ASTAR, BFS, DFS, DIJKSTRA, BIDIRECTIONAL}
 
     public Algorithm generateAlgorithm(AlgorithmType algorithm, int[][] map, int[] start, int[] end, Tile[][] tileMap) {
         switch (algorithm){
@@ -23,6 +24,8 @@ public class AlgorithmFactory {
                 return new DFSAlgorithm(map, start, end, tileMap);
             case DIJKSTRA:
                 return new DijkstraAlgorithm(map, start, end, tileMap);
+            case BIDIRECTIONAL:
+                return new BiDirectionalAlgorithm(map, start, end, tileMap);
         }
         return null;
     }

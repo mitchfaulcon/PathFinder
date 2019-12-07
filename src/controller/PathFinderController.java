@@ -89,6 +89,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         algorithmComboBox.getItems().add("BFS");
         algorithmComboBox.getItems().add("DFS");
         algorithmComboBox.getItems().add("Dijkstra");
+        algorithmComboBox.getItems().add("Bi-Directional");
         goButton.setDisable(true);      //Disable Go button until algorithm is selected
         stopButton.setDisable(true);    //Disable Stop button until algorithm is running
     }
@@ -536,6 +537,8 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             case "Dijkstra":
                 currentAlgorithm = AlgorithmType.DIJKSTRA;
                 break;
+            case "Bi-Directional":
+                currentAlgorithm = AlgorithmType.BIDIRECTIONAL;
         }
         goButton.setDisable(false);     //Algorithm has been selected so Go button can be clicked
     }
