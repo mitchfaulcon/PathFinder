@@ -209,6 +209,7 @@
                      <items>
                         <MenuItem fx:id="mazeMap" mnemonicParsing="false" onAction="#onMapSelect" style="-fx-min-width: 230; -fx-pref-width: 230; -fx-max-width: 230; -fx-min-height: 25; -fx-pref-height: 25; -fx-max-height: 25;" text="Maze" />
                         <MenuItem fx:id="randomMap" mnemonicParsing="false" onAction="#onMapSelect" style="-fx-min-width: 230; -fx-pref-width: 230; -fx-max-width: 230; -fx-min-height: 25; -fx-pref-height: 25; -fx-max-height: 25;" text="Pure Random" />
+                        <MenuItem fx:id="perlinMap" mnemonicParsing="false" onAction="#onMapSelect" style="-fx-min-width: 230; -fx-pref-width: 230; -fx-max-width: 230; -fx-min-height: 25; -fx-pref-height: 25; -fx-max-height: 25;" text="Perlin Noise" />
                      </items>
                   </MenuButton>
                </children>

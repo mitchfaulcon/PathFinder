@@ -19,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.FileChooser;
 import mapGeneration.MazeGenerator;
+import mapGeneration.PerlinGenerator;
 import mapGeneration.PureRandomGenerator;
 
 import java.io.*;
@@ -546,14 +547,16 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
     @FXML
     private void onMapSelect(ActionEvent event) {
+        updateGrid();       //Clear previous tiles from grid
 
         switch (((MenuItem) event.getSource()).getId()) {
             case "mazeMap":
                 new MazeGenerator(tileGrid).generateMap();
                 break;
             case "randomMap":
-                updateGrid();       //Need to clear previous tiles from grid for this algorithm
                 new PureRandomGenerator(tileGrid).generateMap();
+            case "perlinMap":
+                new PerlinGenerator(tileGrid).generateMap();
         }
     }
 }

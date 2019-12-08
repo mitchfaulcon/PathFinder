@@ -3,8 +3,6 @@ package mapGeneration;
 import controller.PathFinderController;
 import controller.Tile;
 
-import java.util.Random;
-
 public class PureRandomGenerator extends MapGenerator {
 
     public PureRandomGenerator(Tile[][] tileMap) {
@@ -17,14 +15,14 @@ public class PureRandomGenerator extends MapGenerator {
      */
     public void generateMap() {
         double coverage = Math.random() * (0.4 - 0.2) + 0.2;
-        int numWallsToPlace = (int)(tileMap.length * tileMap[0].length * coverage);
+        int numWallsToPlace = (int)(rows * cols * coverage);
 
         while (numWallsToPlace > 0) {
             int row, col;
             //Want to place a wall in a new location
             do {
-                row = (int) (Math.random() * tileMap.length);
-                col = (int) (Math.random() * tileMap[0].length);
+                row = (int) (Math.random() * rows);
+                col = (int) (Math.random() * cols);
             } while (tileMap[row][col].getTileStyle() == PathFinderController.TileStyle.WALL);
 
             tileMap[row][col].updateTileStyle(PathFinderController.TileStyle.WALL);

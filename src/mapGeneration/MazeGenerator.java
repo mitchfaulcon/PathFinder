@@ -59,8 +59,6 @@ public class MazeGenerator extends MapGenerator {
      * Method to generate a maze using a customised version of Kruskal's maze generation algorithm
      */
     public void generateMap() {
-        int rows = tileMap.length;
-        int cols = tileMap[0].length;
 
         //Calculate how much space there should be in between the walls of the maze
         int horizontalSpaces = (cols - 1) / 20 + 1;       //5-20 -> 1, 21-40 -> 2, 41-60 -> 3, 61-80 -> 4
