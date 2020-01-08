@@ -555,8 +555,10 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 break;
             case "randomMap":
                 new PureRandomGenerator(tileGrid).generateMap();
+                break;
             case "perlinMap":
                 new PerlinGenerator(tileGrid).generateMap();
+                break;
         }
     }
 }
