@@ -8,6 +8,7 @@ import algorithms.common.Map.RET_CODE;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXToggleNode;
+import imageParser.ImageParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -197,6 +198,17 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         return true;
     }
 
+    /**
+     * Resets the tilegrid to be empty
+     */
+    private void clearGrid() {
+        for (Tile[] row : tileGrid) {
+            for (Tile tile : row) {
+                tile.updateTileStyle(TileStyle.NONE);
+            }
+        }
+    }
+
     @FXML
     private void onDrawToggle(ActionEvent actionEvent) {
         if (actionEvent.getSource() instanceof JFXToggleNode){
@@ -325,7 +337,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         algorithmCompleted();
     }
 
-    private FileChooser createFileChooser() {
+    private FileChooser createFileChooser(boolean load) {
         FileChooser fileChooser = new FileChooser();
 
         //Start the FileChooser in the current directory rather than the root
@@ -333,8 +345,13 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         fileChooser.setInitialDirectory(new File(currentPath));
 
         //Set extension filter for FileChooser to PathFinder Map files
-        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("PathFinder Map File (*.pfm)", "*.pfm");
-        fileChooser.getExtensionFilters().add(extensionFilter);
+        FileChooser.ExtensionFilter pfmExtensionFilter = new FileChooser.ExtensionFilter("PathFinder Map File (*.pfm)", "*.pfm");
+        fileChooser.getExtensionFilters().add(pfmExtensionFilter);
+        //Able to load images
+        if (load) {
+            FileChooser.ExtensionFilter imgExtensionFilter = new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg");
+            fileChooser.getExtensionFilters().add(imgExtensionFilter);
+        }
 
         return fileChooser;
     }
@@ -342,7 +359,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     @FXML
     private void onSave() {
         //Show save dialog
-        File file = createFileChooser().showSaveDialog(saveButton.getScene().getWindow());
+        File file = createFileChooser(false).showSaveDialog(saveButton.getScene().getWindow());
 
         if (file != null) {
             saveToFile(file);
@@ -394,14 +411,27 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     @FXML
     private void onLoad() {
         //Show load dialog
-        File file = createFileChooser().showOpenDialog(saveButton.getScene().getWindow());
+        File file = createFileChooser(true).showOpenDialog(saveButton.getScene().getWindow());
 
         if (file != null) {
-            loadFile(file);
+            clearGrid();
+
+            //Get file extension
+            String extension = "";
+            int i = file.getName().lastIndexOf('.');
+            if (i > 0) {
+                extension = file.getName().substring(i+1);
+            }
+
+            if (extension.equals("pfm")) {
+                loadPFM(file);
+            } else if (extension.equals("png") || extension.equals("jpg")) {
+                loadImage(file);
+            }
         }
     }
 
-    private void loadFile(File file) {
+    private void loadPFM(File file) {
         try {
             FileReader fileReader = new FileReader(file);
 
@@ -516,6 +546,17 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         } catch (IOException ex) {
             Logger.getLogger(PathFinderController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void loadImage(File file) {
+        ImageParser imageParser = new ImageParser(file, MINROWS, MINCOLUMNS, MAXROWS, MAXCOLUMNS);
+
+        rowSpinner.getValueFactory().setValue(imageParser.getRows());        //Automatically updates tileGrid via spinner listener
+        colSpinner.getValueFactory().setValue(imageParser.getCols());
+
+        imageParser.imageToMap(tileGrid);
+
+        saveButton.setDisable(isGridEmpty());
     }
 
     private void showError(String message) {

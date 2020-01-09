@@ -116,6 +116,7 @@ fabric.properties
 
 # PathFinder Maps #
 *.pfm
+Maps/*
 
 #Releases Folder
 Releases/
