@@ -75,7 +75,7 @@ public class ImageParser {
             int darkest = 0;
             int lightest = 255;
             for (int pixel : pixels) {
-                int grayVal = pixel & 0xFF;
+                int grayVal = getGrayValueOfPixel(pixel);
                 if (grayVal > darkest) darkest = grayVal;
                 if (grayVal < lightest) lightest = grayVal;
             }
@@ -101,13 +101,7 @@ public class ImageParser {
                     rowIndex++;
                 }
 
-                //Get gray value of pixel by averaging rbg values
-                int r = (pixel >> 16) & 0xFF;
-                int g = (pixel >> 8) & 0xFF;
-                int b = (pixel & 0xFF);
-                int grayVal = (r + g + b) / 3;
-                grayVal = 255 - grayVal;    //invert so white = 0 and black = 255
-
+                int grayVal = getGrayValueOfPixel(pixel);
                 int tileWeight = (int)((grayVal - lightest) * (100.0 / (darkest - lightest)) + 1);   //Convert values to between 1-101
 
                 map[rowIndex][colIndex] = tileWeight;
@@ -129,6 +123,17 @@ public class ImageParser {
         g.drawImage(image, 0, 0, null);
         g.dispose();
         return newImage;
+    }
+
+    /**
+     * Get the gray value of a pixel by averaging the rbg values
+     */
+    private int getGrayValueOfPixel(int pixel) {
+        int r = (pixel >> 16) & 0xFF;
+        int g = (pixel >> 8) & 0xFF;
+        int b = (pixel & 0xFF);
+        int grayVal = (r + g + b) / 3;
+        return 255 - grayVal;    //invert so white = 0 and black = 255
     }
 
     /**
