@@ -349,7 +349,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         fileChooser.getExtensionFilters().add(pfmExtensionFilter);
         //Able to load images
         if (load) {
-            FileChooser.ExtensionFilter imgExtensionFilter = new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg");
+            FileChooser.ExtensionFilter imgExtensionFilter = new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg");
             fileChooser.getExtensionFilters().add(imgExtensionFilter);
         }
 
@@ -425,7 +425,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
             if (extension.equals("pfm")) {
                 loadPFM(file);
-            } else if (extension.equals("png") || extension.equals("jpg")) {
+            } else if (extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg")) {
                 loadImage(file);
             }
         }
