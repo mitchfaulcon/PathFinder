@@ -4,7 +4,7 @@ PathFinder is a shortest-path algorithm visualisation tool that allows you to se
 ## Features
 - Change the size of the grid that the algorithm will be run on - can be anywhere from a 5x5 grid to an 80x80 grid
 - Draw any map that you want to see a shortest path for - can place start & finish points, draw walls, or place weighted tiles that cost more to travel through than the default tiles
-- Saving & loading of maps
+- Saving & loading of maps - can save a map to load it back in later, and can also load in an image (png or jpeg) to use as a map to perform pathfinding on
 
 Different algorithms, both for pathfinding and for random map generation have also been implemented:
 ### Pathfinding Algorithms
