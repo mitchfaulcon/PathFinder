@@ -26,6 +26,7 @@ import mapGeneration.PureRandomGenerator;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,6 +42,8 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     @FXML JFXToggleNode finishToggle;
     @FXML JFXToggleNode weightedToggle;
     @FXML Spinner<Integer> tileWeightSpinner;
+    @FXML JFXButton undoButton;
+    @FXML JFXButton redoButton;
     @FXML JFXButton saveButton;
     @FXML JFXButton loadButton;
     @FXML MenuButton mapSelectMenu;
@@ -58,6 +61,9 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     private TileStyle drawingMode;
     private int weightedTileValue;
     private Tile[][] tileGrid;               //Stores all tiles
+
+    private ArrayList<MapSnapshot> mapHistory = new ArrayList<>();  //Stores entire history of map to be used in undo/redo
+    private int currentState;   //The current index of mapHistory that the map is displaying
 
     private AlgorithmType currentAlgorithm;
     private Algorithm algorithm;            //Algorithm that will run
@@ -139,6 +145,9 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         addCellListeners();
 
         saveButton.setDisable(isGridEmpty());
+
+        //Clear the operation history as we now have a new map
+        resetOperationHistory();
     }
 
     private void addCellListeners(){
@@ -153,6 +162,19 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
                 //Also need to detect single clicks
                 node.setOnMousePressed(e -> updateTile((Tile) node));
+
+                //When mouse is released, add the current state to operation history for undo/redo
+                node.setOnMouseReleased(e -> {
+                    //Remove anything past the current point in the array
+                    //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
+                    if (currentState < mapHistory.size() - 1) mapHistory.subList(currentState + 1, mapHistory.size()).clear();
+                    redoButton.setDisable(true);
+
+                    //Add current state to history
+                    mapHistory.add(new MapSnapshot(tileGrid));
+                    currentState++;
+                    undoButton.setDisable(false);
+                });
             }
         }
     }
@@ -202,6 +224,9 @@ public class PathFinderController implements Initializable, AlgorithmListener {
      * Resets the tilegrid to be empty
      */
     private void clearGrid() {
+        //Clear the operation history as we now have a new map
+        resetOperationHistory();
+
         for (Tile[] row : tileGrid) {
             for (Tile tile : row) {
                 tile.updateTileStyle(TileStyle.NONE);
@@ -254,6 +279,8 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         eraserToggle.setDisable(true);
         weightedToggle.setDisable(true);
         tileWeightSpinner.setDisable(true);
+        undoButton.setDisable(true);
+        redoButton.setDisable(true);
         saveButton.setDisable(true);
         loadButton.setDisable(true);
         mapSelectMenu.setDisable(true);
@@ -293,7 +320,6 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     }
 
     public void algorithmCompleted(){
-
         //Re-enable buttons when algorithm completed
         rowSpinner.setDisable(false);
         colSpinner.setDisable(false);
@@ -302,6 +328,8 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         wallToggle.setDisable(false);
         eraserToggle.setDisable(false);
         weightedToggle.setDisable(false);
+        undoButton.setDisable(currentState == 0);                       //Disable undo button if we are back at the start
+        redoButton.setDisable(currentState == mapHistory.size() - 1);   //Disable redo button if we are at the last element
         saveButton.setDisable(false);
         loadButton.setDisable(false);
         mapSelectMenu.setDisable(false);
@@ -600,6 +628,51 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             case "perlinMap":
                 new PerlinGenerator(tileGrid).generateMap();
                 break;
+            default:
+                return;
+        }
+        mapHistory.set(0, new MapSnapshot(tileGrid));
+    }
+
+    private void resetOperationHistory() {
+        undoButton.setDisable(true);
+        redoButton.setDisable(true);
+        mapHistory.clear();
+        mapHistory.add(new MapSnapshot(tileGrid));
+        currentState = 0;
+    }
+
+    @FXML
+    private void onUndo() {
+        if (currentState > 0) {
+            //Set the previous map in the list to be displayed
+            currentState--;
+            mapHistory.get(currentState).setAsMap(tileGrid);
+
+            //Enable the redo button
+            redoButton.setDisable(false);
+
+            //Disable undo button if we are back at the start
+            undoButton.setDisable(currentState == 0);
+
+            saveButton.setDisable(isGridEmpty());
+        }
+    }
+
+    @FXML
+    private void onRedo() {
+        if (currentState < mapHistory.size() - 1) {
+            //Set the next map in the list to be displayed
+            currentState++;
+            mapHistory.get(currentState).setAsMap(tileGrid);
+
+            //Enable the undo button
+            undoButton.setDisable(false);
+
+            //Disable redo button if we are at the last element
+            redoButton.setDisable(currentState == mapHistory.size() - 1);
+
+            saveButton.setDisable(isGridEmpty());
         }
     }
 }

@@ -1,8 +1,11 @@
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -13,6 +16,15 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        //Stop program - needed in case program is closed while an algorithm is still running
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
 

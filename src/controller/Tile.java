@@ -21,6 +21,11 @@ public class Tile extends Pane {
         setStyle(DEFAULT_STYLE);
     }
 
+    public Tile (TileStyle tileStyle, int weight) {
+        this.tileStyle = tileStyle;
+        this.weight = weight;
+    }
+
     /**
      * Sets the cell colour depending on the currently selected drawing mode
      */
