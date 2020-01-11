@@ -165,21 +165,25 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
                 //When mouse is released, add the current state to operation history for undo/redo
                 node.setOnMouseReleased(e -> {
-                    //Remove anything past the current point in the array
-                    //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
-                    if (currentState < mapHistory.size() - 1) mapHistory.subList(currentState + 1, mapHistory.size()).clear();
-                    redoButton.setDisable(true);
+                    if (algorithm == null || !algorithm.isRunning()) {  //Only add if algorithm is not running
+                        //Remove anything past the current point in the array
+                        //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
+                        if (currentState < mapHistory.size() - 1)
+                            mapHistory.subList(currentState + 1, mapHistory.size()).clear();
+                        redoButton.setDisable(true);
 
-                    //Add current state to history
-                    mapHistory.add(new MapSnapshot(tileGrid));
-                    currentState++;
-                    undoButton.setDisable(false);
+                        //Add current state to history
+                        mapHistory.add(new MapSnapshot(tileGrid));
+                        currentState++;
+                        undoButton.setDisable(false);
+                    }
                 });
             }
         }
     }
 
     private void updateTile(Tile tile){
+        if (algorithm != null && algorithm.isRunning()) return;    //Don't update if algorithm is running
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
                 //Remove previous searched/path tiles
