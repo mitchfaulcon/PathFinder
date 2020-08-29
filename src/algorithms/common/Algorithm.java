@@ -14,7 +14,7 @@ public abstract class Algorithm {
     protected int[][] map;
     protected int[] start;
     protected int[] end;
-    private boolean isRunning = false;
+    private boolean isRunning;
     public static final int[][] NEIGHBOUR_POSITIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};    //Up, Down, Left, Right
 
     protected Algorithm(int[][] map, int[] start, int[] end, Tile[][] tileMap) {

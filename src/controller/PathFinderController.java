@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -67,6 +68,8 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
     private AlgorithmType currentAlgorithm;
     private Algorithm algorithm;            //Algorithm that will run
+
+    private Tile dragStartTile;     //Tile that click & drag is started from
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -155,27 +158,31 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             if (node instanceof Tile){      //Just to be safe
 
                 //Start drawing
-                node.setOnDragDetected(e -> node.startFullDrag());
+                node.setOnDragDetected(e -> {
+                    node.startFullDrag();
+                    dragStartTile = (Tile) node;    //Save tile drag was started from
+                });
 
                 //Detect when mouse is clicked and dragged over
-                node.setOnMouseDragEntered(e -> updateTile((Tile) node));
+                node.setOnMouseDragEntered(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY) {
+                        updateTile((Tile) node);            //Drawing individual tile with left click so update straight away
+                    } else if (e.getButton() == MouseButton.SECONDARY) {
+                        fillRightClickDrag((Tile) node);    //Selecting a range to draw with right click
+                    }
+                });
 
-                //Also need to detect single clicks
-                node.setOnMousePressed(e -> updateTile((Tile) node));
+                //Also need to detect single left clicks
+                node.setOnMousePressed(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY)
+                        updateTile((Tile) node);
+                });
 
                 //When mouse is released, add the current state to operation history for undo/redo
                 node.setOnMouseReleased(e -> {
                     if (algorithm == null || !algorithm.isRunning()) {  //Only add if algorithm is not running
-                        //Remove anything past the current point in the array
-                        //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
-                        if (currentState < mapHistory.size() - 1)
-                            mapHistory.subList(currentState + 1, mapHistory.size()).clear();
-                        redoButton.setDisable(true);
-
                         //Add current state to history
-                        mapHistory.add(new MapSnapshot(tileGrid));
-                        currentState++;
-                        undoButton.setDisable(false);
+                        addToHistory();
                     }
                 });
             }
@@ -460,6 +467,9 @@ public class PathFinderController implements Initializable, AlgorithmListener {
             } else if (extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg")) {
                 loadImage(file);
             }
+
+            //Save state
+            addToHistory();
         }
     }
 
@@ -678,5 +688,65 @@ public class PathFinderController implements Initializable, AlgorithmListener {
 
             saveButton.setDisable(isGridEmpty());
         }
+    }
+
+    private void fillRightClickDrag(Tile dragEndTile) {
+        //Only want to fill if erasing, drawing walls, or drawing weighed tiles
+        if (drawingMode == TileStyle.START || drawingMode == TileStyle.FINISH) return;
+
+        //Find index of drag start & end tiles
+        Integer dragStartRow = null, dragStartCol = null, dragEndRow = null, dragEndCol = null;
+        for (int row = 0; row < tileGrid.length; row++) {
+            for (int col = 0; col < tileGrid[0].length; col++) {
+                if (tileGrid[row][col].equals(dragStartTile)) {
+                    dragStartRow = row;
+                    dragStartCol = col;
+                }
+                if (tileGrid[row][col].equals(dragEndTile)) {
+                    dragEndRow = row;
+                    dragEndCol = col;
+                }
+            }
+        }
+
+        try {
+            //Find min & max row,col coordinates so drawing can be done correctly
+            int drawStartRow = Math.min(dragStartRow, dragEndRow);
+            int drawEndRow = Math.max(dragStartRow, dragEndRow);
+            int drawStartCol = Math.min(dragStartCol, dragEndCol);
+            int drawEndCol = Math.max(dragStartCol, dragEndCol);
+
+            //Set Map to latest state
+            mapHistory.get(currentState).setAsMap(tileGrid);
+
+            //Fill in tiles
+            for (int row = drawStartRow; row <= drawEndRow; row++) {
+                for (int col = drawStartCol; col <= drawEndCol; col++) {
+                    if (drawingMode == TileStyle.WEIGHTED) {
+                        tileGrid[row][col].updateTileStyle(TileStyle.WEIGHTED, weightedTileValue);
+                    } else {
+                        tileGrid[row][col].updateTileStyle(drawingMode);
+                    }
+                }
+            }
+
+            saveButton.setDisable(isGridEmpty());
+        }
+        catch (NullPointerException ignored) {
+
+        }
+    }
+
+    private void addToHistory() {
+        //Remove anything past the current point in the array
+        //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
+        if (currentState < mapHistory.size() - 1)
+            mapHistory.subList(currentState + 1, mapHistory.size()).clear();
+        redoButton.setDisable(true);
+
+        //Save current state
+        mapHistory.add(new MapSnapshot(tileGrid));
+        currentState++;
+        undoButton.setDisable(false);
     }
 }
