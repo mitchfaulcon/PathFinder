@@ -4,6 +4,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import controller.PathFinderController.TileStyle;
 
+import java.util.Objects;
+
 public class Tile extends Pane {
     private static final String TILE_BORDER_STYLE = " -fx-border-color: black; -fx-border-insets: -0.2; -fx-border-width: 0.4";
     private static final String DEFAULT_STYLE = "-fx-background-color: white;" + TILE_BORDER_STYLE;
@@ -99,5 +101,19 @@ public class Tile extends Pane {
 
     public boolean hasBeenSearched() {
         return isSearched;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Tile tile = (Tile) o;
+        return weight == tile.weight &&
+                isSearched == tile.isSearched &&
+                tileStyle == tile.tileStyle;
+    }
+
+    public boolean objectEquals(Object o) {
+        return this == o;
     }
 }

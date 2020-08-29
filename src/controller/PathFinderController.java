@@ -703,11 +703,11 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         Integer dragStartRow = null, dragStartCol = null, dragEndRow = null, dragEndCol = null;
         for (int row = 0; row < tileGrid.length; row++) {
             for (int col = 0; col < tileGrid[0].length; col++) {
-                if (tileGrid[row][col].equals(dragStartTile)) {
+                if (tileGrid[row][col].objectEquals(dragStartTile)) {
                     dragStartRow = row;
                     dragStartCol = col;
                 }
-                if (tileGrid[row][col].equals(dragEndTile)) {
+                if (tileGrid[row][col].objectEquals(dragEndTile)) {
                     dragEndRow = row;
                     dragEndCol = col;
                 }
@@ -743,15 +743,29 @@ public class PathFinderController implements Initializable, AlgorithmListener {
     }
 
     private void addToHistory() {
-        //Remove anything past the current point in the array
-        //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
-        if (currentState < mapHistory.size() - 1)
-            mapHistory.subList(currentState + 1, mapHistory.size()).clear();
-        redoButton.setDisable(true);
+        //Save current state only if new state is different to previous
+        if (mapHistory.size() == 0 || !areMapsEqual(tileGrid, mapHistory.get(currentState).snapShot)) {
+            //Remove anything past the current point in the array
+            //(happens when redo is used, then a draw is done -> want to get rid of state that was undone)
+            if (currentState < mapHistory.size() - 1)
+                mapHistory.subList(currentState + 1, mapHistory.size()).clear();
+            redoButton.setDisable(true);
 
-        //Save current state
-        mapHistory.add(new MapSnapshot(tileGrid));
-        currentState++;
-        undoButton.setDisable(false);
+            //Save state to history list
+            mapHistory.add(new MapSnapshot(tileGrid));
+            currentState++;
+            undoButton.setDisable(false);
+        }
+    }
+
+    private boolean areMapsEqual(Tile[][] map1, Tile[][] map2) {
+
+        for (int row = 0; row < map1.length; row++) {
+            for (int col = 0; col < map1[0].length; col++) {
+                if (!map1[row][col].equals(map2[row][col])) return false;
+            }
+        }
+
+        return true;
     }
 }
