@@ -166,7 +166,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 //Detect when mouse is clicked and dragged over
                 node.setOnMouseDragEntered(e -> {
                     if (e.getButton() == MouseButton.PRIMARY) {
-                        updateTile((Tile) node);            //Drawing individual tile with left click so update straight away
+                        updateTile((Tile) node, true);            //Drawing individual tile with left click so update straight away
                     } else if (e.getButton() == MouseButton.SECONDARY) {
                         fillRightClickDrag((Tile) node);    //Selecting a range to draw with right click
                     }
@@ -175,7 +175,7 @@ public class PathFinderController implements Initializable, AlgorithmListener {
                 //Also need to detect single left clicks
                 node.setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.PRIMARY)
-                        updateTile((Tile) node);
+                        updateTile((Tile) node, false);
                 });
 
                 //When mouse is released, add the current state to operation history for undo/redo
@@ -189,8 +189,13 @@ public class PathFinderController implements Initializable, AlgorithmListener {
         }
     }
 
-    private void updateTile(Tile tile){
+    private void updateTile(Tile tile, boolean dragging){
         if (algorithm != null && algorithm.isRunning()) return;    //Don't update if algorithm is running
+
+        //Prevent erasing map while dragging around start or finish tile
+        if ((drawingMode == TileStyle.START || drawingMode == TileStyle.FINISH) && dragging) {
+            mapHistory.get(currentState).setAsMap(tileGrid);
+        }
         for (Tile[] tiles : tileGrid) {
             for (Tile t : tiles) {
                 //Remove previous searched/path tiles
