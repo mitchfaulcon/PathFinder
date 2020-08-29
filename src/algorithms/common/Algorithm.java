@@ -85,6 +85,7 @@ public abstract class Algorithm {
                 }
                 //Notify listeners of completion
                 algorithmCompleted();
+                isRunning = false;
             }
             catch (InterruptedException ignored) {
 
